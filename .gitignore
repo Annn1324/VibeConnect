@@ -1,0 +1,68 @@
+# Node.js dependencies
+node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Build output
+dist/
+build/
+.cache/
+
+# env files
+.env
+.env.*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE/editor files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Frontend / Vite / React
+public/build/
+*.local
+
+# Backend temp files
+*.swp
+*.swo
+
+# Optional npm cache
+.npm
+
+# Yarn integrity
+.yarn-integrity
+
+# pnpm store
+.pnp.cjs
+.pnp.loader.mjs
+.pnp.js
+
+# macOS
+.AppleDouble
+.LSOverride
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+lerna-debug.log*
+
+# Optional coverage directory
+coverage/
