@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { login } from '../../services/authService';
+import { Link } from 'react-router-dom';
 import './Login.css';
 import brandIcon from '../../assets/icon.svg';
 import emailIcon from '../../assets/email-icon.png';
@@ -10,93 +12,158 @@ import appleIcon from '../../assets/apple-logo.png';
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    rememberMe: false,
+  });
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleChange = (event) => {
+    const { name, value, type, checked } = event.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value,
+    }));
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setErrorMessage('');
+    setSuccessMessage('');
+    setIsSubmitting(true);
+
+    try {
+      const data = await login(formData.email, formData.password);
+      const storage = formData.rememberMe ? localStorage : sessionStorage;
+
+      storage.setItem('token', data.token);
+      storage.setItem('user', JSON.stringify(data.user));
+
+      setSuccessMessage(data.message || 'Login successful');
+    } catch (error) {
+      setErrorMessage(error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="login-page">
-      <div className="bg-glow bg-glow-left" />
-      <div className="bg-glow bg-glow-right" />
+      <div className="login-glow login-glow-left" />
+      <div className="login-glow login-glow-right" />
 
-      <div className="login-container">
-        <div className="brand">
-          <img src={brandIcon} alt="VibeConnect Logo" className="logo" />
-          <div>
-            <h1 className="logo">
-              <span className="vibe">Vibe</span>
-              <span className="connect">Connect</span>
-            </h1>
-          </div>
+      <div className="login-shell">
+        <div className="login-brand">
+          <img src={brandIcon} alt="VibeConnect Logo" className="login-brand-icon" />
+          <h1 className="login-brand-title">
+            <span className="login-brand-vibe">Vibe</span>
+            <span className="login-brand-connect">Connect</span>
+          </h1>
         </div>
 
         <div className="login-card">
-          <div className="form-group">
-            <div className="email-field">
-              <label>Email Address</label>
+          <form className="login-form" onSubmit={handleSubmit}>
+            <div className="login-field">
+              <label className="login-label" htmlFor="login-email">
+                Email Address
+              </label>
 
-              <div className="input-wrapper">
-                <img src={emailIcon} alt="email-icon" className="input-icon-img" />
-                <input type="email" placeholder="name@gmail.com" />
+              <div className="login-input">
+                <img src={emailIcon} alt="email icon" className="login-input-icon" />
+                <input
+                  id="login-email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  placeholder="Enter your email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
               </div>
             </div>
 
-            <div className="password-field">
-              <div className="password-header">
-                <label>Password</label>
-                <div className="fogot-pass">
-                  <span>Fogot password?</span>
-                </div>
+            <div className="login-field">
+              <div className="login-field-header">
+                <label className="login-label" htmlFor="login-password">
+                  Password
+                </label>
+                <button type="button" className="login-forgot">
+                  Forgot password?
+                </button>
               </div>
 
-              <div className="input-wrapper">
-                <img src={passIcon} alt="pass-icon" className="input-icon-img" />
+              <div className="login-input">
+                <img src={passIcon} alt="password icon" className="login-input-icon" />
                 <input
+                  id="login-password"
+                  name="password"
                   type={showPassword ? 'text' : 'password'}
+                  autoComplete="current-password"
                   placeholder="Enter your password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
                 />
                 <button
                   type="button"
-                  className="password-toggle"
+                  className="login-password-toggle"
                   onClick={() => setShowPassword((visible) => !visible)}
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
                   <img
                     src={showPassword ? hidePasswordIcon : showPasswordIcon}
-                    alt={showPassword ? 'hide-pass-icon' : 'show-pass-icon'}
-                    className="toggle-icon"
+                    alt={showPassword ? 'hide password' : 'show password'}
+                    className="login-toggle-icon"
                   />
                 </button>
               </div>
             </div>
 
-            <div className="remember-me">
-              <label className="checkbox-row">
-                <input type="checkbox" />
+            <div>
+              <label className="login-checkbox">
+                <input
+                  type="checkbox"
+                  name="rememberMe"
+                  checked={formData.rememberMe}
+                  onChange={handleChange}
+                />
                 <span>Remember Me</span>
               </label>
             </div>
 
-            <button className="primary-btn">Sign In</button>
+            {errorMessage ? <p className="login-status login-status-error">{errorMessage}</p> : null}
+            {successMessage ? <p className="login-status login-status-success">{successMessage}</p> : null}
+
+            <button className="login-submit" type="submit" disabled={isSubmitting}>
+              {isSubmitting ? 'Signing In...' : 'Sign In'}
+            </button>
+          </form>
+          <div className="login-divider">
+            <p>OR CONTINUE WITH</p>
           </div>
-          <div className="divider">
-            <p className="divider">OR CONTINUE WITH</p>
-          </div>
-          <div className="social-login">
-            <button className="social-btn">
-              <img src={googleIcon} alt="Google logo" className="social-icon" />
+          <div className="login-social">
+            <button className="login-social-button">
+              <img src={googleIcon} alt="Google logo" className="login-social-icon" />
               <span>Sign in with Google</span>
             </button>
-            <button className="social-btn">
-              <img src={appleIcon} alt="Apple logo" className="social-icon" />
+            <button className="login-social-button">
+              <img src={appleIcon} alt="Apple logo" className="login-social-icon" />
               <span>Sign in with Apple</span>
             </button>
           </div>
-          <div className="sign-up-footer">
-            <p className="auth-switch">
-              Don't have an account? <a href="/register">Sign Up</a>
+          <div>
+            <p className="login-switch">
+              Don't have an account? <Link to="/register">Sign Up</Link>
             </p>
           </div>
         </div>
 
-        <div className="login-footer">
+        <div className="login-legal">
           <span>PRIVACY</span>
           <span>TERMS</span>
           <span>HELP</span>

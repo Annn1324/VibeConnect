@@ -1,59 +1,44 @@
-:root {
-  --bg: #0F072E;
-  --card: rgba(43, 30, 88, 0.72);
-  --line: rgba(255, 255, 255, 0.08);
-  --text: #ffffff;
-  --muted: #B0A7D6;
-  --input: rgba(255, 255, 255, 0.06);
-  --primary: linear-gradient(to bottom, #5A3BDD 0%, #A192FF 100%);
-}
-
-body {
-  margin: 0;
-  font-family: 'Be Vietnam Pro', sans-serif;
-  background: #6d6669;
-}
-
-h1{
-    font-family: 'poppins';
-    font-size: 32px;
-    font-weight: 700;
-}
-
-label {
-  font-family: 'Be Vietnam Pro', sans-serif;
-  
-  font-weight: 600;
-  
-}
-
-
-input::placeholder {
-  font-family: 'Be Vietnam Pro', sans-serif;
-  opacity: 0.4;
-}
-.vibe {
-  color: #ffffff;
-}
-.connect {
-  background: linear-gradient(to bottom, #73F397, #4F46E5);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
 .login-page {
+  --login-color-bg: #0f072e;
+  --login-color-text: #ffffff;
+  --login-color-text-muted: #b0a7d6;
+  --login-color-link: #a192ff;
+  --login-color-accent: #5a3bdd;
+  --login-color-accent-soft: #6d5efc;
+  --login-color-success: #73f397;
+  --login-color-glow: #00675c;
+  --login-color-surface: rgba(255, 255, 255, 0.05);
+  --login-color-surface-strong: rgba(255, 255, 255, 0.06);
+  --login-color-surface-hover: rgba(255, 255, 255, 0.1);
+  --login-color-border: rgba(255, 255, 255, 0.08);
+  --login-shadow-card: 0 25px 50px -12px rgba(0, 0, 0, 0.28);
+  --login-shadow-button: 0 10px 24px rgba(90, 59, 221, 0.24);
+  --login-shadow-button-hover: 0 14px 28px rgba(90, 59, 221, 0.3);
+  --login-shadow-button-active: 0 6px 16px rgba(90, 59, 221, 0.22);
+  --login-shadow-social-hover: 0 10px 22px rgba(8, 5, 32, 0.24);
+  --login-shadow-social-active: 0 4px 12px rgba(8, 5, 32, 0.18);
+  --login-radius-card: 32px;
+  --login-radius-control: 14px;
+  --login-radius-button: 16px;
+  --login-radius-pill: 999px;
+  width: 100%;
+  height: 100vh;
   min-height: 100vh;
   position: relative;
   overflow: hidden;
-  background: var(--bg);
-  color: var(--text);
   display: flex;
   justify-content: center;
   align-items: center;
+  background: var(--login-color-bg);
+  color: var(--login-color-text);
+  font-family: 'Be Vietnam Pro', sans-serif;
 }
 
-.login-container {
+.login-shell {
+  height: 100vh;
   min-height: 100vh;
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -61,78 +46,142 @@ input::placeholder {
   gap: 32px;
 }
 
+.login-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+
+.login-brand-icon {
+  object-fit: contain;
+}
+
+.login-brand-title {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.login-brand-vibe {
+  color: var(--login-color-text);
+}
+
+.login-brand-connect {
+  background: linear-gradient(to bottom, var(--login-color-success), #4f46e5);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 
 .login-card {
   display: flex;
   flex-direction: column;
-  width: 360px;
-  height:auto;
-  padding: 28px 22px;
-  border-radius: 32px;
-  background: rgba(255, 255, 255, 0.05);
-backdrop-filter: blur(64px);
--webkit-backdrop-filter: blur(64px);
-box-shadow: 0 25 50 -12 rgba(0, 0, 0, 0);
-  border: 1px solid var(--line);
   gap: 40px;
+  width: 360px;
+  max-width: calc(100vw - 32px);
+  padding: 28px 22px;
+  border-radius: var(--login-radius-card);
+  background: var(--login-color-surface);
+  border: 1px solid var(--login-color-border);
+  box-shadow: var(--login-shadow-card);
+  backdrop-filter: blur(64px);
+  -webkit-backdrop-filter: blur(64px);
 }
 
-.form-group {
+.login-form {
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
 
-.email-field,
-.password-field {
+.login-field {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
-/* Input wrapper to position the icon and input together */
-.input-wrapper {
+
+.login-field-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.login-label,
+.login-checkbox,
+.login-switch,
+.login-legal {
+  font-size: 14px;
+  color: var(--login-color-text-muted);
+}
+
+.login-label {
+  font-weight: 600;
+}
+
+.login-forgot {
+  border: none;
+  padding: 0;
+  background: transparent;
+  color: var(--login-color-link);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.login-input {
   display: flex;
   align-items: center;
   gap: 10px;
   height: 44px;
   padding: 0 14px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.06);
+  border-radius: var(--login-radius-control);
+  background: var(--login-color-surface-strong);
 }
 
-.input-icon-img {
+.login-input-icon {
   width: 16px;
   height: 16px;
   object-fit: contain;
   flex-shrink: 0;
 }
 
-.input-wrapper input {
+.login-input input {
   flex: 1;
+  height: 100%;
   border: none;
   outline: none;
   background: transparent;
-  color: white;
-  font-family: 'Be Vietnam Pro', sans-serif;
+  color: var(--login-color-text);
+  font-family: inherit;
   font-size: 14px;
-  padding: 2px;
+  padding: 2px 0;
 }
 
-.password-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.login-input input::placeholder {
+  color: var(--login-color-text);
+  opacity: 0.4;
 }
 
-.fogot-pass span {
-  font-size: 12px;
-  color: #A192FF;
-  cursor: pointer;
-  font-family: 'Be Vietnam Pro', sans-serif;
-  font-weight: 600;
+.login-input input:-webkit-autofill,
+.login-input input:-webkit-autofill:hover,
+.login-input input:-webkit-autofill:focus,
+.login-input input:-webkit-autofill:active {
+  -webkit-text-fill-color: var(--login-color-text);
+  caret-color: var(--login-color-text);
+  transition: background-color 9999s ease-out 0s;
 }
 
-.password-toggle {
+.login-input input:-webkit-autofill::first-line {
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.login-password-toggle {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -142,218 +191,229 @@ box-shadow: 0 25 50 -12 rgba(0, 0, 0, 0);
   cursor: pointer;
 }
 
-.toggle-icon {
+.login-toggle-icon {
   width: 18px;
   height: 18px;
   object-fit: contain;
 }
 
-/* Adjust spacing for email and password fields */
-
-
-
-.form-group label,
-.row-between span,
-.checkbox-row,
-.divider,
-.auth-switch,
-.login-footer {
-  font-size: 14px;
-  color: var(--muted);
-}
-
-.row-between {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-input[type="email"],
-input[type="password"],
-input[type="text"] {
-  height: 44px;
-  border: none;
-  outline: none;
-  border-radius: 14px;
-  padding: 0 14px;
-  color: white;
-  font-family: 'Be Vietnam Pro', sans-serif;
-}
-
-.checkbox-row {
+.login-checkbox {
   display: flex;
   align-items: center;
   gap: 8px;
-  
 }
 
-input[type="checkbox"] {
+.login-checkbox input[type='checkbox'] {
   appearance: none;
   -webkit-appearance: none;
   height: 20px;
   width: 20px;
   border-radius: 8px;
-  background: var(--input);
+  background: var(--login-color-surface-strong);
+  border: 1px solid transparent;
   cursor: pointer;
   flex-shrink: 0;
   position: relative;
 }
 
-input[type="checkbox"]:checked {
-  background: #6d5efc;
-  border-color: #6d5efc;
+.login-checkbox input[type='checkbox']:checked {
+  background: var(--login-color-accent-soft);
+  border-color: var(--login-color-accent-soft);
 }
 
-input[type="checkbox"]:checked::after {
+.login-checkbox input[type='checkbox']:checked::after {
   content: '';
   position: absolute;
   left: 50%;
   top: 50%;
   width: 4px;
   height: 8px;
-  border: solid #ffffff;
+  border: solid var(--login-color-text);
   border-width: 0 2px 2px 0;
   transform: translate(-50%, -60%) rotate(45deg);
 }
 
-.primary-btn,
-.social-btn {
+.login-submit,
+.login-social-button {
   width: 100%;
   border: none;
-  border-radius: 16px;
   cursor: pointer;
 }
 
-.primary-btn {
+.login-submit {
   height: 60px;
   padding: 0 16px;
-  border-radius: 9999px;
+  border-radius: var(--login-radius-pill);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  font-family: 'Be Vietnam Pro', sans-serif;
+  color: var(--login-color-text);
+  font-family: inherit;
   font-size: 18px;
   font-weight: 700;
-  background: var(--primary);
-  box-shadow: 0 10px 24px rgba(90, 59, 221, 0.24);
+  background: linear-gradient(to bottom, var(--login-color-accent) 0%, var(--login-color-link) 100%);
+  box-shadow: var(--login-shadow-button);
   transition: transform 160ms ease, box-shadow 160ms ease, filter 160ms ease;
 }
 
-.primary-btn:hover {
+.login-submit:disabled {
+  cursor: not-allowed;
+  filter: grayscale(0.1);
+  opacity: 0.7;
+}
+
+.login-submit:hover {
   filter: brightness(1.05);
   transform: translateY(-1px);
-  box-shadow: 0 14px 28px rgba(90, 59, 221, 0.3);
+  box-shadow: var(--login-shadow-button-hover);
 }
 
-.primary-btn:active {
+.login-submit:active {
   filter: brightness(0.98);
   transform: translateY(1px) scale(0.985);
-  box-shadow: 0 6px 16px rgba(90, 59, 221, 0.22);
+  box-shadow: var(--login-shadow-button-active);
 }
 
-.primary-btn:focus-visible {
+.login-submit:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 4px rgba(161, 146, 255, 0.22), 0 10px 24px rgba(90, 59, 221, 0.24);
+  box-shadow: 0 0 0 4px rgba(161, 146, 255, 0.22), var(--login-shadow-button);
 }
 
-.social-btn {
+.login-status {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.login-status-error {
+  color: #ffb4b4;
+}
+
+.login-status-success {
+  color: #9ef0b5;
+}
+
+.login-divider,
+.login-switch {
+  text-align: center;
+}
+
+.login-divider p {
+  margin: 0;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--login-color-text-muted);
+}
+
+.login-social {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.login-social-button {
   height: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  background: rgba(255, 255, 255, 0.06);;
-  color: white;
-  margin-bottom: 10px;
+  border-radius: var(--login-radius-button);
+  background: var(--login-color-surface-strong);
+  color: var(--login-color-text);
   transition: transform 160ms ease, background-color 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
 }
 
-.social-btn:hover {
+.login-social-button:hover {
   transform: translateY(-1px);
-  background: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 10px 22px rgba(8, 5, 32, 0.24);
+  background: var(--login-color-surface-hover);
+  box-shadow: var(--login-shadow-social-hover);
 }
 
-.social-btn:active {
+.login-social-button:active {
   transform: translateY(1px) scale(0.99);
   background: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 4px 12px rgba(8, 5, 32, 0.18);
+  box-shadow: var(--login-shadow-social-active);
 }
 
-.social-btn:focus-visible {
+.login-social-button:focus-visible {
   outline: none;
   border-color: rgba(161, 146, 255, 0.45);
   box-shadow: 0 0 0 4px rgba(161, 146, 255, 0.16);
 }
 
-.social-btn span{
+.login-social-button span {
   font-size: 14px;
-  font-family: 'Be Vietnam Pro', sans-serif;
+  font-family: inherit;
   font-weight: 600;
 }
 
-.social-icon {
+.login-social-icon {
   width: 20px;
   height: 20px;
   object-fit: contain;
   flex-shrink: 0;
 }
 
-.auth-switch a {
-  color: #A192FF;
+.login-switch {
+  margin: 0;
+}
+
+.login-switch a {
+  color: var(--login-color-link);
   font-weight: 600;
   text-decoration: none;
 }
 
-.divider,
-.auth-switch,
-.login-footer,
-.brand {
-  text-align: center;
-}
-.divider p{
-  font-family: 'be vietnam pro', sans-serif;
-  font-weight: 600;
-  font-size: 12px;
-}
-.brand h1 {
-  margin: 10px 0 0;
-}
-
-.login-footer {
+.login-legal {
   display: flex;
+  justify-content: center;
   gap: 24px;
-  
 }
 
-.login-footer span{
+.login-legal span {
   opacity: 0.3;
-  font-family: 'be vietnam pro', sans-serif;
+  font-family: inherit;
   font-weight: 600;
   font-size: 10px;
   cursor: pointer;
 }
 
-.bg-glow {
+.login-glow {
   position: absolute;
-  border-radius: 999px;
+  border-radius: var(--login-radius-pill);
   filter: blur(90px);
   opacity: 0.6;
 }
 
-.bg-glow-left {
+.login-glow-left {
   width: 384px;
   height: 384px;
-  background: #5A3BDD;
+  background: var(--login-color-accent);
   top: -40px;
   left: -40px;
 }
 
-.bg-glow-right {
+.login-glow-right {
   width: 384px;
   height: 384px;
-  background: #00675C;
+  background: var(--login-color-glow);
   right: -40px;
   bottom: -40px;
+}
+
+@media (max-width: 480px) {
+  .login-shell {
+    gap: 24px;
+  }
+
+  .login-card {
+    gap: 32px;
+    padding: 24px 20px;
+    border-radius: 26px;
+  }
+
+  .login-brand-title {
+    font-size: 30px;
+  }
 }
