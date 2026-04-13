@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { register } from '../../services/authService';
 import './Register.css';
 import brandIcon from '../../assets/icon.svg';
 import emailIcon from '../../assets/email-icon.png';
@@ -12,6 +13,62 @@ import userIcon from '../../assets/user.png';
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [formData, setFormData] = useState({
+    fullname: '',
+    email: '',
+    username: '',
+    password: '',
+    confirmPassword: '',
+    agreeToTerms: false,
+  });
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleChange = (event) => {
+    const { name, value, type, checked } = event.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value,
+    }));
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setErrorMessage('');
+    setSuccessMessage('');
+    setIsSubmitting(true);
+
+    if (formData.password !== formData.confirmPassword) {
+      setErrorMessage('Passwords do not match.');
+      setIsSubmitting(false);
+      return;
+    }
+
+    try {
+      const data = await register({
+        fullname: formData.fullname.trim(),
+        email: formData.email.trim(),
+        username: formData.username.trim(),
+        password: formData.password,
+      });
+
+      setSuccessMessage(data.message || 'Register successful');
+      setFormData({
+        fullname: '',
+        email: '',
+        username: '',
+        password: '',
+        confirmPassword: '',
+        agreeToTerms: false,
+      });
+    } catch (error) {
+      setErrorMessage(error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="register-page">
@@ -32,16 +89,13 @@ export default function Register() {
             <h2>
               Tham gia vào <span>Không Gian</span> kết nối với mọi người.
             </h2>
-            <p>
-              Tạo hồ sơ, khám phá và chia sẻ những khoảnh khắc của bạn.
-            </p>
+            <p>Tạo hồ sơ, khám phá và chia sẻ những khoảnh khắc của bạn.</p>
           </div>
 
           <div className="showcase-points">
             <div className="showcase-point">
               <div className="point-icon">01</div>
-              <span>Bảng tin đơn giản
-</span>
+              <span>Bảng tin đơn giản</span>
             </div>
             <div className="showcase-point">
               <div className="point-icon">02</div>
@@ -57,7 +111,7 @@ export default function Register() {
           </div>
 
           <div className="register-card">
-            <div className="register-form">
+            <form className="register-form" onSubmit={handleSubmit}>
               <div className="register-field">
                 <label className="register-label" htmlFor="register-name">
                   Full Name
@@ -66,10 +120,13 @@ export default function Register() {
                   <img src={fullNameIcon} alt="full name icon" />
                   <input
                     id="register-name"
-                    name="name"
+                    name="fullname"
                     type="text"
                     autoComplete="name"
-                    placeholder="Enter your fullname "
+                    placeholder="Enter your full name"
+                    value={formData.fullname}
+                    onChange={handleChange}
+                    required
                   />
                 </div>
               </div>
@@ -86,6 +143,9 @@ export default function Register() {
                     type="email"
                     autoComplete="email"
                     placeholder="Enter your email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
                   />
                 </div>
               </div>
@@ -102,6 +162,9 @@ export default function Register() {
                     type="text"
                     autoComplete="username"
                     placeholder="@an_1324"
+                    value={formData.username}
+                    onChange={handleChange}
+                    required
                   />
                 </div>
               </div>
@@ -118,6 +181,10 @@ export default function Register() {
                     type={showPassword ? 'text' : 'password'}
                     autoComplete="new-password"
                     placeholder="Enter your password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    minLength={6}
+                    required
                   />
                   <button
                     type="button"
@@ -145,6 +212,10 @@ export default function Register() {
                     type={showConfirmPassword ? 'text' : 'password'}
                     autoComplete="new-password"
                     placeholder="Confirm your password"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    minLength={6}
+                    required
                   />
                   <button
                     type="button"
@@ -161,15 +232,26 @@ export default function Register() {
               </div>
 
               <label className="register-consent">
-                <input type="checkbox" />
+                <input
+                  type="checkbox"
+                  name="agreeToTerms"
+                  checked={formData.agreeToTerms}
+                  onChange={handleChange}
+                  required
+                />
                 <span>
                   I agree to the <a href="/">Terms of Service</a> and{' '}
                   <a href="/">Privacy Policy</a>.
                 </span>
               </label>
 
-              <button className="register-submit">Create Account</button>
-            </div>
+              {errorMessage ? <p className="register-status register-status-error">{errorMessage}</p> : null}
+              {successMessage ? <p className="register-status register-status-success">{successMessage}</p> : null}
+
+              <button className="register-submit" type="submit" disabled={isSubmitting}>
+                {isSubmitting ? 'Creating Account...' : 'Create Account'}
+              </button>
+            </form>
 
             <div className="register-footer">
               Already have an account? <Link to="/login">Log In</Link>

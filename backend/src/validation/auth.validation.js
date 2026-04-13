@@ -1,6 +1,12 @@
 const { z } = require('zod');
 
 const registerSchema = z.object({
+    fullname: z
+        .string()
+        .trim()
+        .min(2, 'Full name must be at least 2 characters')
+        .max(100, 'Full name must be less than 100 characters'),
+
     username: z
         .string()
         .trim()

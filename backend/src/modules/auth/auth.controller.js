@@ -6,20 +6,32 @@ const catchAsync = require('../../utils/catchAsync');
 
 // Registration controller
 exports.register = catchAsync(async (req, res) => {
-    const { username, email, password } = req.body;
-    const existingUser = await User.findOne({ email });
+    const { fullname, username, email, password } = req.body;
+    const existingUser = await User.findOne({
+        $or: [{ email }, { username }]
+    });
 
     if (existingUser) {
-        throw new AppError('User already exists', 400);
+        if (existingUser.email === email) {
+            throw new AppError('Email already exists', 400);
+        }
+
+        throw new AppError('Username already exists', 400);
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await User.create({ username, email, password: hashedPassword });
+    const user = await User.create({
+        fullname,
+        username,
+        email,
+        password: hashedPassword
+    });
 
     res.status(201).json({
         message: 'Register successful',
         user: {
             id: user._id,
+            fullname: user.fullname,
             username: user.username,
             email: user.email
         }
