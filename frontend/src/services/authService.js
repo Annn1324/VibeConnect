@@ -1,11 +1,19 @@
 const AUTH_API_URL = 'http://localhost:5000/auth';
 
 const AUTH_ERROR_MESSAGES = {
-  INVALID_CREDENTIALS: 'Email hoặc mật khẩu không đúng',
-  ACCOUNT_NOT_FOUND: 'Tài khoản không tồn tại',
-  USER_NOT_FOUND: 'Tài khoản không tồn tại',
-  ACCOUNT_LOCKED: 'Tài khoản đã bị khóa',
-  EMAIL_NOT_VERIFIED: 'Vui lòng xác minh email trước khi đăng nhập',
+  INVALID_CREDENTIALS: 'Email or password is incorrect.',
+  ACCOUNT_NOT_FOUND: 'Account does not exist.',
+  USER_NOT_FOUND: 'Account does not exist.',
+  ACCOUNT_LOCKED: 'Account has been locked.',
+  EMAIL_NOT_VERIFIED: 'Please verify your email before signing in.',
+};
+
+const parseResponseData = async (res) => {
+  try {
+    return await res.json();
+  } catch {
+    return {};
+  }
 };
 
 const getFriendlyLoginError = (data, status) => {
@@ -18,28 +26,49 @@ const getFriendlyLoginError = (data, status) => {
 
   switch (message?.toLowerCase()) {
     case 'invalid credentials':
-      return 'Email hoặc mật khẩu không đúng';
+      return 'Email or password is incorrect.';
     case 'account not found':
     case 'account does not exist':
     case 'user not found':
-      return 'Tài khoản không tồn tại';
+      return 'Account does not exist.';
     case 'account locked':
-      return 'Tài khoản đã bị khóa';
+      return 'Account has been locked.';
     case 'email not verified':
-      return 'Vui lòng xác minh email trước khi đăng nhập';
+      return 'Please verify your email before signing in.';
     default:
       break;
   }
 
   if (status === 401) {
-    return 'Email hoặc mật khẩu không đúng';
+    return 'Email or password is incorrect.';
   }
 
   if (status === 404) {
-    return 'Tài khoản không tồn tại';
+    return 'Account does not exist.';
   }
 
-  return message || 'Đăng nhập thất bại. Vui lòng thử lại.';
+  return message || 'Sign in failed. Please try again.';
+};
+
+const getFriendlyRegisterError = (data, status) => {
+  const message = data?.message?.trim();
+
+  switch (message?.toLowerCase()) {
+    case 'email already exists':
+      return 'This email is already registered.';
+    case 'username already exists':
+      return 'This username is already taken.';
+    case 'user already exists':
+      return 'This account already exists.';
+    default:
+      break;
+  }
+
+  if (status === 400 && message) {
+    return message;
+  }
+
+  return message || 'Registration failed. Please try again.';
 };
 
 export const login = async (email, password) => {
@@ -54,16 +83,33 @@ export const login = async (email, password) => {
     }),
   });
 
-  let data = {};
-
-  try {
-    data = await res.json();
-  } catch {
-    data = {};
-  }
+  const data = await parseResponseData(res);
 
   if (!res.ok) {
     throw new Error(getFriendlyLoginError(data, res.status));
+  }
+
+  return data;
+};
+
+export const register = async ({ fullname, email, username, password }) => {
+  const res = await fetch(`${AUTH_API_URL}/register`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      fullname,
+      email,
+      username,
+      password,
+    }),
+  });
+
+  const data = await parseResponseData(res);
+
+  if (!res.ok) {
+    throw new Error(getFriendlyRegisterError(data, res.status));
   }
 
   return data;
