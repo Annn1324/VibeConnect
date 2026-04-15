@@ -7,7 +7,10 @@ import AuthBrand from "../../components/auth/AuthBrand";
 import AuthInput from "../../components/auth/AuthInput";
 import PasswordField from "../../components/auth/PasswordField";
 import AuthStatus from "../../components/auth/AuthStatus";
-import AuthFooterLink from "../../components/auth/AuthFooterLink";
+import AuthSocial from "../../components/auth/AuthSocial";
+import AuthSwitch from "../../components/auth/AuthSwitch";
+import AuthLegal from "../../components/auth/AuthLegal";
+import AuthRemember from "../../components/auth/AuthRemember";
 
 import emailIcon from "../../assets/email-icon.png";
 import passIcon from "../../assets/pass-icon.png";
@@ -16,6 +19,7 @@ import hideIcon from "../../assets/hide-icon2.png";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -27,10 +31,28 @@ export default function Login() {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
+
     setFormData((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    setError("");
+    setSuccess("");
+
+    try {
+      const data = await login(formData.email, formData.password);
+
+      localStorage.setItem("token", data.token);
+
+      setSuccess("Login successful");
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   return (
@@ -38,8 +60,7 @@ export default function Login() {
       <AuthBrand />
 
       <div className="login-card">
-        <form className="login-form">
-
+        <form className="login-form" onSubmit={handleSubmit}>
           <AuthInput
             label="Email Address"
             name="email"
@@ -61,12 +82,21 @@ export default function Login() {
           />
 
           <AuthStatus error={error} success={success} />
-
-          <button className="login-submit">Sign In</button>
+          <AuthRemember
+            checked={formData.rememberMe}
+            onChange={handleChange}
+          />
+          <button className="login-submit" type="submit">
+            Sign In
+          </button>
         </form>
 
-        <AuthFooterLink />
+        <AuthSocial />
+
+        <AuthSwitch />
       </div>
+
+      <AuthLegal />
     </AuthLayout>
   );
 }
