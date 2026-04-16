@@ -1,7 +1,7 @@
 export default function AuthRemember({ checked, onChange }) {
   return (
-    <div className="login-checkbox">
-      <label className="login-checkbox">
+    <div>
+      <label className="auth-checkbox">
         <input
           type="checkbox"
           name="rememberMe"

@@ -1,8 +1,14 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { register } from '../../services/authService';
 import './Register.css';
-import brandIcon from '../../assets/icon.svg';
+
+import AuthLayout from '../../layouts/AuthLayout';
+import AuthBrand from '../../components/auth/AuthBrand';
+import AuthInput from '../../components/auth/AuthInput';
+import PasswordField from '../../components/auth/PasswordField';
+import AuthStatus from '../../components/auth/AuthStatus';
+import AuthSwitch from '../../components/auth/AuthSwitch';
+
 import emailIcon from '../../assets/email-icon.png';
 import fullNameIcon from '../../assets/fullname.png';
 import passIcon from '../../assets/pass-icon.png';
@@ -71,194 +77,133 @@ export default function Register() {
   };
 
   return (
-    <div className="register-page">
-      <div className="bg-glow bg-glow-left" />
-      <div className="bg-glow bg-glow-right" />
+    <AuthLayout shellClassName="register-shell">
+      <section className="register-showcase">
+        <AuthBrand className="register-brand" />
 
-      <div className="register-shell">
-        <section className="register-showcase">
-          <div className="register-brand">
-            <img src={brandIcon} alt="VibeConnect Logo" className="register-brand-icon" />
-            <h1>
-              <span className="vibe">Vibe</span>
-              <span className="connect">Connect</span>
-            </h1>
+        <div className="showcase-copy">
+          <h2>
+            Tham gia vào <span>không gian</span> kết nối với mọi người.
+          </h2>
+          <p>Tạo hồ sơ, khám phá và chia sẻ những khoảnh khắc của bạn.</p>
+        </div>
+
+        <div className="showcase-points">
+          <div className="showcase-point">
+            <div className="point-icon">01</div>
+            <span>Bảng tin đa dạng</span>
           </div>
-
-          <div className="showcase-copy">
-            <h2>
-              Tham gia vào <span>Không Gian</span> kết nối với mọi người.
-            </h2>
-            <p>Tạo hồ sơ, khám phá và chia sẻ những khoảnh khắc của bạn.</p>
+          <div className="showcase-point">
+            <div className="point-icon">02</div>
+            <span>Kết nối với mọi người</span>
           </div>
+        </div>
+      </section>
 
-          <div className="showcase-points">
-            <div className="showcase-point">
-              <div className="point-icon">01</div>
-              <span>Bảng tin đơn giản</span>
-            </div>
-            <div className="showcase-point">
-              <div className="point-icon">02</div>
-              <span>Kết nối với mọi người</span>
-            </div>
+      <section className="register-form-panel">
+        <div className="auth-heading register-heading">
+          <h2>Sign Up</h2>
+          <p>Create your account to start connecting.</p>
+        </div>
+
+        <div className="auth-card register-card">
+          <form className="auth-form register-form" onSubmit={handleSubmit}>
+            <AuthInput
+              id="register-name"
+              label="Full Name"
+              name="fullname"
+              type="text"
+              value={formData.fullname}
+              onChange={handleChange}
+              placeholder="Enter your full name"
+              icon={fullNameIcon}
+              iconAlt="Full name icon"
+              autoComplete="name"
+            />
+
+            <AuthInput
+              id="register-email"
+              label="Email"
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Enter your email"
+              icon={emailIcon}
+              iconAlt="Email icon"
+              autoComplete="email"
+            />
+
+            <AuthInput
+              id="register-username"
+              label="Username"
+              name="username"
+              type="text"
+              value={formData.username}
+              onChange={handleChange}
+              placeholder="@an_1324"
+              icon={userIcon}
+              iconAlt="Username icon"
+              autoComplete="username"
+            />
+
+            <PasswordField
+              id="register-password"
+              label="Password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              showPassword={showPassword}
+              onToggle={() => setShowPassword((visible) => !visible)}
+              icon={passIcon}
+              showIcon={showPasswordIcon}
+              hideIcon={hidePasswordIcon}
+              placeholder="Enter your password"
+              autoComplete="new-password"
+              minLength={6}
+            />
+
+            <PasswordField
+              id="register-confirm-password"
+              label="Confirm Password"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              showPassword={showConfirmPassword}
+              onToggle={() => setShowConfirmPassword((visible) => !visible)}
+              icon={passIcon}
+              showIcon={showPasswordIcon}
+              hideIcon={hidePasswordIcon}
+              placeholder="Confirm your password"
+              autoComplete="new-password"
+              minLength={6}
+            />
+
+            <label className="register-consent">
+              <input
+                type="checkbox"
+                name="agreeToTerms"
+                checked={formData.agreeToTerms}
+                onChange={handleChange}
+                required
+              />
+              <span>
+                I agree to the <a href="/">Terms of Service</a> and <a href="/">Privacy Policy</a>.
+              </span>
+            </label>
+
+            <AuthStatus error={errorMessage} success={successMessage} />
+
+            <button className="auth-submit" type="submit" disabled={isSubmitting}>
+              {isSubmitting ? 'Creating Account...' : 'Create Account'}
+            </button>
+          </form>
+
+          <div className="register-footer">
+            <AuthSwitch prompt="Already have an account?" linkText="Log In" to="/login" />
           </div>
-        </section>
-
-        <section className="register-form-panel">
-          <div className="register-heading">
-            <h2>Sign Up</h2>
-            <p>Create your account to start connecting.</p>
-          </div>
-
-          <div className="register-card">
-            <form className="register-form" onSubmit={handleSubmit}>
-              <div className="register-field">
-                <label className="register-label" htmlFor="register-name">
-                  Full Name
-                </label>
-                <div className="register-input">
-                  <img src={fullNameIcon} alt="full name icon" />
-                  <input
-                    id="register-name"
-                    name="fullname"
-                    type="text"
-                    autoComplete="name"
-                    placeholder="Enter your full name"
-                    value={formData.fullname}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="register-field">
-                <label className="register-label" htmlFor="register-email">
-                  Email
-                </label>
-                <div className="register-input">
-                  <img src={emailIcon} alt="email icon" />
-                  <input
-                    id="register-email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    placeholder="Enter your email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="register-field">
-                <label className="register-label" htmlFor="register-username">
-                  Username
-                </label>
-                <div className="register-input">
-                  <img src={userIcon} alt="username icon" />
-                  <input
-                    id="register-username"
-                    name="username"
-                    type="text"
-                    autoComplete="username"
-                    placeholder="@an_1324"
-                    value={formData.username}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="register-field">
-                <label className="register-label" htmlFor="register-password">
-                  Password
-                </label>
-                <div className="register-input">
-                  <img src={passIcon} alt="password icon" />
-                  <input
-                    id="register-password"
-                    name="password"
-                    type={showPassword ? 'text' : 'password'}
-                    autoComplete="new-password"
-                    placeholder="Enter your password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    minLength={6}
-                    required
-                  />
-                  <button
-                    type="button"
-                    className="password-toggle"
-                    onClick={() => setShowPassword((visible) => !visible)}
-                    aria-label={showPassword ? 'Hide password' : 'Show password'}
-                  >
-                    <img
-                      src={showPassword ? hidePasswordIcon : showPasswordIcon}
-                      alt={showPassword ? 'hide password' : 'show password'}
-                    />
-                  </button>
-                </div>
-              </div>
-
-              <div className="register-field">
-                <label className="register-label" htmlFor="register-confirm-password">
-                  Confirm Password
-                </label>
-                <div className="register-input">
-                  <img src={passIcon} alt="confirm password icon" />
-                  <input
-                    id="register-confirm-password"
-                    name="confirmPassword"
-                    type={showConfirmPassword ? 'text' : 'password'}
-                    autoComplete="new-password"
-                    placeholder="Confirm your password"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    minLength={6}
-                    required
-                  />
-                  <button
-                    type="button"
-                    className="password-toggle"
-                    onClick={() => setShowConfirmPassword((visible) => !visible)}
-                    aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
-                  >
-                    <img
-                      src={showConfirmPassword ? hidePasswordIcon : showPasswordIcon}
-                      alt={showConfirmPassword ? 'hide password' : 'show password'}
-                    />
-                  </button>
-                </div>
-              </div>
-
-              <label className="register-consent">
-                <input
-                  type="checkbox"
-                  name="agreeToTerms"
-                  checked={formData.agreeToTerms}
-                  onChange={handleChange}
-                  required
-                />
-                <span>
-                  I agree to the <a href="/">Terms of Service</a> and{' '}
-                  <a href="/">Privacy Policy</a>.
-                </span>
-              </label>
-
-              {errorMessage ? <p className="register-status register-status-error">{errorMessage}</p> : null}
-              {successMessage ? <p className="register-status register-status-success">{successMessage}</p> : null}
-
-              <button className="register-submit" type="submit" disabled={isSubmitting}>
-                {isSubmitting ? 'Creating Account...' : 'Create Account'}
-              </button>
-            </form>
-
-            <div className="register-footer">
-              Already have an account? <Link to="/login">Log In</Link>
-            </div>
-          </div>
-        </section>
-      </div>
-    </div>
+        </div>
+      </section>
+    </AuthLayout>
   );
 }
