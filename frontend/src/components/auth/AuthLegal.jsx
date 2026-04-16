@@ -1,6 +1,6 @@
 export default function AuthLegal() {
   return (
-    <div className="login-legal">
+    <div className="auth-legal">
       <span>PRIVACY</span>
       <span>TERMS</span>
       <span>HELP</span>

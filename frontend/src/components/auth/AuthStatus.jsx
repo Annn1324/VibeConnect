@@ -1,8 +1,8 @@
 export default function AuthStatus({ error, success }) {
   return (
     <>
-      {error && <p className="login-status login-status-error">{error}</p>}
-      {success && <p className="login-status login-status-success">{success}</p>}
+      {error ? <p className="auth-status auth-status-error">{error}</p> : null}
+      {success ? <p className="auth-status auth-status-success">{success}</p> : null}
     </>
   );
 }

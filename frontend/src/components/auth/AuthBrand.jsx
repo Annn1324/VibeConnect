@@ -1,12 +1,14 @@
 import brandIcon from '../../assets/icon.svg';
 
-export default function AuthBrand() {
+export default function AuthBrand({ className = '' }) {
+  const classNames = ['auth-brand', className].filter(Boolean).join(' ');
+
   return (
-    <div className="login-brand">
-      <img src={brandIcon} alt="logo" className="login-brand-icon" />
-      <h1 className="login-brand-title">
-        <span className="login-brand-vibe">Vibe</span>
-        <span className="login-brand-connect">Connect</span>
+    <div className={classNames}>
+      <img src={brandIcon} alt="VibeConnect logo" className="auth-brand-icon" />
+      <h1 className="auth-brand-title">
+        <span className="auth-brand-vibe">Vibe</span>
+        <span className="auth-brand-connect">Connect</span>
       </h1>
     </div>
   );

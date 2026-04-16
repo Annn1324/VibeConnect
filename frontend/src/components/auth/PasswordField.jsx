@@ -1,41 +1,59 @@
 export default function PasswordField({
+  id,
+  label = 'Password',
+  name = 'password',
   value,
   onChange,
   showPassword,
-  setShowPassword,
-  passIcon,
+  onToggle,
+  icon,
   showIcon,
   hideIcon,
+  placeholder = 'Enter your password',
+  autoComplete,
+  minLength,
+  forgotText,
+  onForgotClick,
+  required = true,
 }) {
   return (
-    <div className="login-field">
-      <div className="login-field-header">
-        <label className="login-label">Password</label>
-        <button type="button" className="login-forgot">
-          Forgot password?
-        </button>
+    <div className="auth-field">
+      <div className="auth-field-header">
+        <label className="auth-label" htmlFor={id}>
+          {label}
+        </label>
+        {forgotText ? (
+          <button type="button" className="auth-link-button" onClick={onForgotClick}>
+            {forgotText}
+          </button>
+        ) : null}
       </div>
 
-      <div className="login-input">
-        <img src={passIcon} className="login-input-icon" />
+      <div className="auth-input">
+        <img src={icon} alt={`${label} icon`} className="auth-input-icon" />
 
         <input
-          type={showPassword ? "text" : "password"}
-          name="password"
+          id={id}
+          type={showPassword ? 'text' : 'password'}
+          name={name}
           value={value}
           onChange={onChange}
-          placeholder="Enter your password"
-          required
+          placeholder={placeholder}
+          autoComplete={autoComplete}
+          minLength={minLength}
+          required={required}
         />
 
         <button
           type="button"
-          className="login-password-toggle"
-          onClick={() => setShowPassword(!showPassword)}
+          className="auth-password-toggle"
+          onClick={onToggle}
+          aria-label={showPassword ? `Hide ${label.toLowerCase()}` : `Show ${label.toLowerCase()}`}
         >
           <img
             src={showPassword ? hideIcon : showIcon}
-            className="login-toggle-icon"
+            alt={showPassword ? `Hide ${label.toLowerCase()}` : `Show ${label.toLowerCase()}`}
+            className="auth-toggle-icon"
           />
         </button>
       </div>
