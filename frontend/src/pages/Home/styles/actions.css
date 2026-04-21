@@ -1,0 +1,88 @@
+.home-nav-item:hover,
+.home-icon-button:hover,
+.home-avatar-button:hover,
+.home-post-menu:hover,
+.home-panel-icon-button:hover,
+.home-match-action:hover,
+.home-post-share:hover,
+.home-panel-link:hover,
+.home-chip:hover,
+.home-primary-button:hover,
+.home-fab:hover {
+  transform: translateY(-1px);
+}
+
+.home-icon-button:hover,
+.home-post-menu:hover,
+.home-panel-icon-button:hover,
+.home-post-share:hover {
+  background: rgba(122, 93, 255, 0.1);
+}
+
+.home-avatar-button:hover,
+.home-match-action:hover {
+  box-shadow: 0 10px 18px rgba(122, 93, 255, 0.14);
+}
+
+.home-chip:hover {
+  filter: brightness(0.98);
+  box-shadow: 0 8px 16px rgba(93, 83, 126, 0.08);
+}
+
+.home-primary-button:hover,
+.home-fab:hover {
+  filter: brightness(1.04);
+}
+
+.home-primary-button:hover {
+  box-shadow: 0 14px 24px rgba(122, 93, 255, 0.24);
+}
+
+.home-fab:hover {
+  box-shadow: 0 20px 34px rgba(122, 93, 255, 0.28);
+}
+
+.home-nav-item:active,
+.home-icon-button:active,
+.home-avatar-button:active,
+.home-post-menu:active,
+.home-panel-icon-button:active,
+.home-match-action:active,
+.home-post-share:active,
+.home-panel-link:active,
+.home-chip:active,
+.home-primary-button:active,
+.home-fab:active {
+  transform: translateY(1px) scale(0.97);
+}
+
+.home-nav-item:focus-visible,
+.home-icon-button:focus-visible,
+.home-avatar-button:focus-visible,
+.home-post-menu:focus-visible,
+.home-panel-icon-button:focus-visible,
+.home-match-action:focus-visible,
+.home-post-share:focus-visible,
+.home-panel-link:focus-visible,
+.home-chip:focus-visible,
+.home-primary-button:focus-visible,
+.home-fab:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(122, 93, 255, 0.18);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-nav-item,
+  .home-icon-button,
+  .home-avatar-button,
+  .home-post-menu,
+  .home-panel-header button,
+  .home-match-action,
+  .home-post-metrics button,
+  .home-panel-link,
+  .home-chip,
+  .home-primary-button,
+  .home-fab {
+    transition: none;
+  }
+}
