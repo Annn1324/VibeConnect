@@ -1,0 +1,95 @@
+.home-composer {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 12px;
+  padding: 14px 16px;
+}
+
+.home-avatar {
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(180deg, #f8d9bb, #f1f4ff);
+  color: #5d537e;
+  font-size: 12px;
+}
+
+.home-composer-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.home-composer textarea {
+  resize: none;
+  min-height: 58px;
+  padding: 16px;
+  border: none;
+  outline: none;
+  border-radius: 16px;
+  background: #ece5fb;
+  color: #4a416d;
+  font: inherit;
+  font-size: 13px;
+}
+
+.home-composer-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.home-chip-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.home-chip,
+.home-chip-static {
+  border: none;
+  padding: 4px 9px;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 11px;
+}
+
+.home-chip {
+  cursor: pointer;
+  transition:
+    transform 160ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 180ms ease,
+    filter 180ms ease,
+    background-color 180ms ease;
+}
+
+.home-chip-media {
+  background: #e7fbf4;
+  color: #2c8b72;
+}
+
+.home-chip-vibe,
+.home-chip-static {
+  background: #ece8ff;
+  color: #665c90;
+}
+
+.home-primary-button {
+  min-width: 74px;
+  height: 36px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #7a5dff 0%, #5a3bdd 100%);
+  color: #ffffff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(122, 93, 255, 0.18);
+  transition:
+    transform 160ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 180ms ease,
+    filter 180ms ease;
+}

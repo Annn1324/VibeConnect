@@ -1,0 +1,136 @@
+.home-rightbar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: sticky;
+  top: 0;
+  align-self: start;
+}
+
+.home-panel {
+  padding: 18px;
+}
+
+.home-panel-soft {
+  background: rgba(235, 227, 255, 0.82);
+}
+
+.home-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.home-panel-header h2 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.home-panel-header button {
+  color: #7a5dff;
+  font-weight: 700;
+}
+
+.home-panel-icon-button {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+}
+
+.home-panel-icon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+.home-trends,
+.home-match-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.home-trend-item span {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #8c82b0;
+}
+
+.home-trend-item strong {
+  display: block;
+  margin-top: 5px;
+  font-size: 14px;
+}
+
+.home-trend-item p,
+.home-match-copy p {
+  margin: 3px 0 0;
+  font-size: 11px;
+  color: #847aa5;
+}
+
+.home-panel-link {
+  margin-top: 14px;
+  color: #6e5ef0;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.home-match-item {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) 26px;
+  align-items: center;
+  gap: 10px;
+}
+
+.home-match-avatar {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(180deg, #ffe1bf, #f1e5ff);
+  color: #5d537e;
+  font-size: 12px;
+}
+
+.home-match-copy strong {
+  display: block;
+  font-size: 13px;
+}
+
+.home-match-action {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(122, 93, 255, 0.1);
+  color: #7a5dff;
+  font-size: 16px;
+}
+
+.home-match-icon {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+}
+
+.home-fab {
+  align-self: flex-end;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #8e76ff 0%, #7a5dff 100%);
+  color: #ffffff;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 16px 28px rgba(122, 93, 255, 0.22);
+  transition:
+    transform 160ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 180ms ease,
+    filter 180ms ease;
+}
