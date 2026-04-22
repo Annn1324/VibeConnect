@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { login } from '../../services/authService';
+import { persistAuthSession } from '../../services/authStorage';
 import './Login.css';
 
 import AuthLayout from '../../layouts/AuthLayout';
@@ -18,6 +20,8 @@ import showIcon from '../../assets/hide-icon.png';
 import hideIcon from '../../assets/hide-icon2.png';
 
 export default function Login() {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [showPassword, setShowPassword] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -29,6 +33,19 @@ export default function Login() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (location.state?.successMessage) {
+      setSuccess(location.state.successMessage);
+    }
+
+    if (location.state?.email) {
+      setFormData((prev) => ({
+        ...prev,
+        email: location.state.email,
+      }));
+    }
+  }, [location.state]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -48,12 +65,10 @@ export default function Login() {
 
     try {
       const data = await login(formData.email, formData.password);
-      const storage = formData.rememberMe ? localStorage : sessionStorage;
-
-      storage.setItem('token', data.token);
-      storage.setItem('user', JSON.stringify(data.user));
+      persistAuthSession(data, formData.rememberMe);
 
       setSuccess(data.message || 'Login successful');
+      navigate('/home', { replace: true });
     } catch (err) {
       setError(err.message);
     } finally {

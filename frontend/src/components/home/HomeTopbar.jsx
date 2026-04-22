@@ -1,8 +1,19 @@
+import { useNavigate } from 'react-router-dom';
 import searchIcon from '../../assets/search-icon.png';
 import settingIcon from '../../assets/setting-icon.png';
 import helpIcon from '../../assets/help-icon.png';
+import { clearAuthSession, getStoredUser } from '../../services/authStorage';
 
 export default function HomeTopbar() {
+  const navigate = useNavigate();
+  const user = getStoredUser();
+  const avatarLabel = user?.username?.[0] || user?.email?.[0] || 'U';
+
+  const handleLogout = () => {
+    clearAuthSession();
+    navigate('/login', { replace: true });
+  };
+
   return (
     <header className="home-topbar">
       <div className="home-search">
@@ -17,8 +28,11 @@ export default function HomeTopbar() {
         <button type="button" className="home-icon-button" aria-label="Help">
           <img src={helpIcon} alt="" className="home-action-icon" />
         </button>
-        <button type="button" className="home-avatar-button">
-          J
+        <button type="button" className="home-logout-button" onClick={handleLogout}>
+          Log out
+        </button>
+        <button type="button" className="home-avatar-button" aria-label="User profile">
+          {avatarLabel.toUpperCase()}
         </button>
       </div>
     </header>

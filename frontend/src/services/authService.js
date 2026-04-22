@@ -1,4 +1,4 @@
-const AUTH_API_URL = 'http://localhost:5000/auth';
+import { apiRequest } from './api';
 
 const AUTH_ERROR_MESSAGES = {
   INVALID_CREDENTIALS: 'Email or password is incorrect.',
@@ -6,14 +6,6 @@ const AUTH_ERROR_MESSAGES = {
   USER_NOT_FOUND: 'Account does not exist.',
   ACCOUNT_LOCKED: 'Account has been locked.',
   EMAIL_NOT_VERIFIED: 'Please verify your email before signing in.',
-};
-
-const parseResponseData = async (res) => {
-  try {
-    return await res.json();
-  } catch {
-    return {};
-  }
 };
 
 const getFriendlyLoginError = (data, status) => {
@@ -53,17 +45,6 @@ const getFriendlyLoginError = (data, status) => {
 const getFriendlyRegisterError = (data, status) => {
   const message = data?.message?.trim();
 
-  switch (message?.toLowerCase()) {
-    case 'email already exists':
-      return 'This email is already registered.';
-    case 'username already exists':
-      return 'This username is already taken.';
-    case 'user already exists':
-      return 'This account already exists.';
-    default:
-      break;
-  }
-
   if (status === 400 && message) {
     return message;
   }
@@ -72,7 +53,7 @@ const getFriendlyRegisterError = (data, status) => {
 };
 
 export const login = async (email, password) => {
-  const res = await fetch(`${AUTH_API_URL}/login`, {
+  const { ok, status, data } = await apiRequest('/auth/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -83,17 +64,15 @@ export const login = async (email, password) => {
     }),
   });
 
-  const data = await parseResponseData(res);
-
-  if (!res.ok) {
-    throw new Error(getFriendlyLoginError(data, res.status));
+  if (!ok) {
+    throw new Error(getFriendlyLoginError(data, status));
   }
 
   return data;
 };
 
 export const register = async ({ fullname, email, username, password }) => {
-  const res = await fetch(`${AUTH_API_URL}/register`, {
+  const { ok, status, data } = await apiRequest('/auth/register', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -106,10 +85,8 @@ export const register = async ({ fullname, email, username, password }) => {
     }),
   });
 
-  const data = await parseResponseData(res);
-
-  if (!res.ok) {
-    throw new Error(getFriendlyRegisterError(data, res.status));
+  if (!ok) {
+    throw new Error(getFriendlyRegisterError(data, status));
   }
 
   return data;

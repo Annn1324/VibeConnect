@@ -1,6 +1,7 @@
 .home-nav-item:hover,
 .home-icon-button:hover,
 .home-avatar-button:hover,
+.home-logout-button:hover,
 .home-post-menu:hover,
 .home-panel-icon-button:hover,
 .home-match-action:hover,
@@ -20,6 +21,7 @@
 }
 
 .home-avatar-button:hover,
+.home-logout-button:hover,
 .home-match-action:hover {
   box-shadow: 0 10px 18px rgba(122, 93, 255, 0.14);
 }
@@ -45,6 +47,7 @@
 .home-nav-item:active,
 .home-icon-button:active,
 .home-avatar-button:active,
+.home-logout-button:active,
 .home-post-menu:active,
 .home-panel-icon-button:active,
 .home-match-action:active,
@@ -59,6 +62,7 @@
 .home-nav-item:focus-visible,
 .home-icon-button:focus-visible,
 .home-avatar-button:focus-visible,
+.home-logout-button:focus-visible,
 .home-post-menu:focus-visible,
 .home-panel-icon-button:focus-visible,
 .home-match-action:focus-visible,
@@ -75,6 +79,7 @@
   .home-nav-item,
   .home-icon-button,
   .home-avatar-button,
+  .home-logout-button,
   .home-post-menu,
   .home-panel-header button,
   .home-match-action,
