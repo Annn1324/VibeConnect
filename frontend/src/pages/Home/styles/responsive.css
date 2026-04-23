@@ -74,6 +74,12 @@
 
   .home-top-actions {
     justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+
+  .home-user-summary {
+    width: 100%;
+    align-items: flex-start;
   }
 
   .home-composer {

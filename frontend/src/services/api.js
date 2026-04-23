@@ -1,3 +1,5 @@
+import { getAuthToken } from './authStorage';
+
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 const parseResponseData = async (res) => {
@@ -18,5 +20,22 @@ export const apiRequest = async (path, options = {}) => {
     data,
   };
 };
+
+export const createAuthHeaders = (headers = {}) => {
+  const token = getAuthToken();
+
+  return token
+    ? {
+        ...headers,
+        Authorization: `Bearer ${token}`,
+      }
+    : headers;
+};
+
+export const authorizedApiRequest = (path, options = {}) =>
+  apiRequest(path, {
+    ...options,
+    headers: createAuthHeaders(options.headers),
+  });
 
 export { API_URL };

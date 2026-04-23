@@ -93,3 +93,9 @@
     box-shadow 180ms ease,
     filter 180ms ease;
 }
+
+.home-composer-error {
+  margin: 0;
+  font-size: 12px;
+  color: #c13d66;
+}
