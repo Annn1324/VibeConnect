@@ -9,6 +9,8 @@ const createPostSchema = z.object({
         .max(500, 'Content must be less than 500 characters'),
 });
 
+const updatePostSchema = createPostSchema;
+
 const getPostsQuerySchema = z.object({
     page: z.coerce
         .number()
@@ -24,6 +26,7 @@ const getPostsQuerySchema = z.object({
 });
 
 module.exports = {
-    createPostSchema
-    , getPostsQuerySchema
+    createPostSchema,
+    updatePostSchema,
+    getPostsQuerySchema
 };

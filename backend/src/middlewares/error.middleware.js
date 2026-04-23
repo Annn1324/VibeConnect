@@ -4,8 +4,18 @@ const handleCastErrorDB = (err) =>
     new AppError(`Invalid ${err.path}: ${err.value}`, 400);
 
 const handleDuplicateFieldsDB = (err) => {
-    const duplicatedField = Object.keys(err.keyValue || {})[0] || 'field';
-    return new AppError(`${duplicatedField} already exists`, 400);
+    const duplicatedFields = Object.keys(err.keyValue || {});
+    const rawMessage = `${err.message || ''}`.toLowerCase();
+
+    if (duplicatedFields.includes('email') || rawMessage.includes(' email')) {
+        return new AppError('Email already exists', 400);
+    }
+
+    if (duplicatedFields.includes('username') || rawMessage.includes(' username')) {
+        return new AppError('Username already exists', 400);
+    }
+
+    return new AppError('User already exists', 400);
 };
 
 const handleValidationErrorDB = (err) => {
@@ -49,10 +59,6 @@ const errorMiddleware = (err, req, res, next) => {
     error.statusCode = error.statusCode || 500;
     error.status = error.status || 'error';
 
-    if (process.env.NODE_ENV === 'development') {
-        return sendErrorDev(error, res);
-    }
-
     if (error.name === 'CastError') {
         error = handleCastErrorDB(error);
     } else if (error.code === 11000) {
@@ -63,6 +69,10 @@ const errorMiddleware = (err, req, res, next) => {
         error = handleJWTError();
     } else if (error.name === 'TokenExpiredError') {
         error = handleJWTExpiredError();
+    }
+
+    if (process.env.NODE_ENV === 'development') {
+        return sendErrorDev(error, res);
     }
 
     return sendErrorProd(error, res);

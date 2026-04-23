@@ -152,8 +152,34 @@
   gap: 10px;
 }
 
+.home-user-summary {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  min-width: 0;
+}
+
+.home-user-summary strong,
+.home-user-summary span {
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-user-summary strong {
+  font-size: 12px;
+  color: #40345f;
+}
+
+.home-user-summary span {
+  font-size: 11px;
+  color: #8b7fb2;
+}
+
 .home-icon-button,
 .home-avatar-button,
+.home-logout-button,
 .home-post-menu,
 .home-panel-header button,
 .home-match-action,
@@ -191,6 +217,29 @@
 .home-avatar-button {
   border: 1px solid rgba(122, 93, 255, 0.28);
   background: linear-gradient(180deg, rgba(255, 219, 189, 0.86), rgba(233, 208, 255, 0.9));
+}
+
+.home-logout-button {
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: rgba(122, 93, 255, 0.1);
+  color: #5a44c8;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.home-icon-button:disabled,
+.home-avatar-button:disabled,
+.home-logout-button:disabled,
+.home-post-menu:disabled,
+.home-post-metric:disabled,
+.home-post-share:disabled,
+.home-primary-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .home-main-canvas {

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { register } from '../../services/authService';
 import './Register.css';
 
@@ -17,14 +18,14 @@ import hidePasswordIcon from '../../assets/hide-icon2.png';
 import userIcon from '../../assets/user.png';
 
 export default function Register() {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
     fullname: '',
-    email: '',
     username: '',
+    email: '',
     password: '',
-    confirmPassword: '',
     agreeToTerms: false,
   });
   const [errorMessage, setErrorMessage] = useState('');
@@ -60,14 +61,12 @@ export default function Register() {
         password: formData.password,
       });
 
-      setSuccessMessage(data.message || 'Register successful');
-      setFormData({
-        fullname: '',
-        email: '',
-        username: '',
-        password: '',
-        confirmPassword: '',
-        agreeToTerms: false,
+      navigate('/login', {
+        replace: true,
+        state: {
+          successMessage: data.message || 'Register successful. Please sign in.',
+          email: formData.email.trim(),
+        },
       });
     } catch (error) {
       setErrorMessage(error.message);
