@@ -21,8 +21,10 @@
 
 .home-composer textarea {
   resize: none;
-  min-height: 58px;
-  padding: 16px;
+  height: 32px;
+  min-height: 32px;
+  max-height: 120px;
+  padding: 5px 14px;
   border: none;
   outline: none;
   border-radius: 16px;
@@ -30,6 +32,9 @@
   color: #4a416d;
   font: inherit;
   font-size: 13px;
+  line-height: 1.4;
+  box-sizing: border-box;
+  overflow-y: hidden;
 }
 
 .home-composer-footer {
@@ -38,6 +43,26 @@
   justify-content: space-between;
   gap: 12px;
   flex-wrap: wrap;
+}
+
+.home-composer-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.home-composer-tool {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid rgba(122, 93, 255, 0.18);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.home-composer-tool .home-action-icon {
+  width: 17px;
+  height: 17px;
 }
 
 .home-chip-row {
