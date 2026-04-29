@@ -15,6 +15,7 @@ import {
   deletePost,
   getPosts,
 } from '../../services/postService';
+import { connectSocket } from '../../services/socketService';
 
 const DEFAULT_ERROR_MESSAGE = 'Could not load posts right now.';
 
@@ -55,6 +56,36 @@ export default function Home() {
   useEffect(() => {
     loadPosts();
   }, [loadPosts]);
+
+  useEffect(() => {
+    const socket = connectSocket();
+
+    const handleLikeChanged = ({ postId, delta, actorId }) => {
+      if (!postId || actorId === user?.id) {
+        return;
+      }
+
+      setPosts((currentPosts) =>
+        currentPosts.map((currentPost) =>
+          currentPost.id === postId
+            ? {
+                ...currentPost,
+                stats: {
+                  ...currentPost.stats,
+                  likes: Math.max(0, (currentPost.stats?.likes || 0) + delta),
+                },
+              }
+            : currentPost,
+        ),
+      );
+    };
+
+    socket.on('post:like-changed', handleLikeChanged);
+
+    return () => {
+      socket.off('post:like-changed', handleLikeChanged);
+    };
+  }, [user?.id]);
 
   const handleCreatePost = async (content) => {
     setIsPosting(true);

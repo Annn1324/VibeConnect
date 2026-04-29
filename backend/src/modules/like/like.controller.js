@@ -9,6 +9,13 @@ exports.createLike = catchAsync(async (req, res) => {
         authorID: req.user.userId
     });
 
+    req.app.get('io')?.emit('post:like-changed', {
+        postId: postID,
+        delta: 1,
+        actorId: req.user.userId,
+        likeId: like._id
+    });
+
     res.status(201).json(like);
 });
 
@@ -24,6 +31,13 @@ exports.deleteLike = catchAsync(async (req, res) => {
     }
 
     await like.deleteOne();
+    req.app.get('io')?.emit('post:like-changed', {
+        postId: like.postID.toString(),
+        delta: -1,
+        actorId: req.user.userId,
+        likeId: like._id
+    });
+
     res.json({ message: 'Like removed' });
 });
 

@@ -47,7 +47,7 @@ export default function HomeComposer({ user, isSubmitting, onSubmit }) {
       await onSubmit(trimmedContent);
       setContent('');
     } catch (submitError) {
-      setError(submitError.message || 'Could not publish post.');
+      setError(submitError.message || 'Không thể đăng bài.');
     }
   };
 
