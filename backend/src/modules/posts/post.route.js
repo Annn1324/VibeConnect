@@ -8,10 +8,11 @@ const {
     getPostsQuerySchema
 } = require('../../validation/post.validation');
 const { idParamSchema } = require('../../validation/common.validation');
+const { uploadPostMedia } = require('../../middlewares/upload.middleware');
 const router = express.Router();
 
 // Create a new post
-router.post('/', authMiddleware, validate(createPostSchema), PostController.createPost);
+router.post('/', authMiddleware, uploadPostMedia, validate(createPostSchema), PostController.createPost);
 router.get('/', authMiddleware, validate(getPostsQuerySchema, 'query'), PostController.getPosts);
 router.get('/:id', authMiddleware, validate(idParamSchema, 'params'), PostController.getPostById);
 router.put('/:id', authMiddleware, validate(idParamSchema, 'params'), validate(updatePostSchema), PostController.updatePost);

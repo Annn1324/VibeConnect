@@ -7,8 +7,11 @@ const MAX_COMPOSER_HEIGHT = 120;
 
 export default function HomeComposer({ user, isSubmitting, onSubmit }) {
   const [content, setContent] = useState('');
+  const [mediaFile, setMediaFile] = useState(null);
   const [error, setError] = useState('');
   const textareaRef = useRef(null);
+  const imageInputRef = useRef(null);
+  const videoInputRef = useRef(null);
   const avatarLabel = user?.username?.[0] || user?.fullname?.[0] || user?.email?.[0] || 'U';
 
   useLayoutEffect(() => {
@@ -44,11 +47,29 @@ export default function HomeComposer({ user, isSubmitting, onSubmit }) {
 
     try {
       setError('');
-      await onSubmit(trimmedContent);
+      await onSubmit(trimmedContent, mediaFile);
       setContent('');
+      setMediaFile(null);
+      if (imageInputRef.current) {
+        imageInputRef.current.value = '';
+      }
+      if (videoInputRef.current) {
+        videoInputRef.current.value = '';
+      }
     } catch (submitError) {
       setError(submitError.message || 'Không thể đăng bài.');
     }
+  };
+
+  const handleMediaChange = (event) => {
+    const file = event.target.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    setError('');
+    setMediaFile(file);
   };
 
   return (
@@ -70,12 +91,44 @@ export default function HomeComposer({ user, isSubmitting, onSubmit }) {
         <div className="home-composer-footer">
           <div className="home-chip-row">
             <span className="home-chip home-chip-static">@{user?.username || 'guest'}</span>
+            {mediaFile ? (
+              <button
+                type="button"
+                className="home-chip home-chip-media"
+                onClick={() => {
+                  setMediaFile(null);
+                  if (imageInputRef.current) {
+                    imageInputRef.current.value = '';
+                  }
+                  if (videoInputRef.current) {
+                    videoInputRef.current.value = '';
+                  }
+                }}
+              >
+                {mediaFile.name}
+              </button>
+            ) : null}
           </div>
           <div className="home-composer-actions">
+            <input
+              ref={imageInputRef}
+              type="file"
+              accept="image/*"
+              className="home-file-input"
+              onChange={handleMediaChange}
+            />
+            <input
+              ref={videoInputRef}
+              type="file"
+              accept="video/*"
+              className="home-file-input"
+              onChange={handleMediaChange}
+            />
             <button
               type="button"
               className="home-icon-button home-composer-tool"
               aria-label="Add image"
+              onClick={() => imageInputRef.current?.click()}
             >
               <img src={pictureIcon} alt="" className="home-action-icon" />
             </button>
@@ -83,6 +136,7 @@ export default function HomeComposer({ user, isSubmitting, onSubmit }) {
               type="button"
               className="home-icon-button home-composer-tool"
               aria-label="Add video"
+              onClick={() => videoInputRef.current?.click()}
             >
               <img src={videoIcon} alt="" className="home-action-icon" />
             </button>

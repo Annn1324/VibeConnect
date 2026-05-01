@@ -87,11 +87,11 @@ export default function Home() {
     };
   }, [user?.id]);
 
-  const handleCreatePost = async (content) => {
+  const handleCreatePost = async (content, mediaFile) => {
     setIsPosting(true);
 
     try {
-      const newPost = await createPost(content);
+      const newPost = await createPost(content, mediaFile);
       setPosts((currentPosts) => [newPost, ...currentPosts]);
       return newPost;
     } catch (createError) {

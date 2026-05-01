@@ -18,14 +18,24 @@ export const getPosts = async (page = 1, limit = 20) => {
   return data;
 };
 
-export const createPost = async (content) => {
-  const { ok, status, data } = await authorizedApiRequest('/posts', {
+export const createPost = async (content, mediaFile) => {
+  const requestOptions = {
     method: 'POST',
-    headers: {
+  };
+
+  if (mediaFile) {
+    const formData = new FormData();
+    formData.append('content', content);
+    formData.append('media', mediaFile);
+    requestOptions.body = formData;
+  } else {
+    requestOptions.headers = {
       'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ content }),
-  });
+    };
+    requestOptions.body = JSON.stringify({ content });
+  }
+
+  const { ok, status, data } = await authorizedApiRequest('/posts', requestOptions);
 
   if (!ok) {
     throw createHttpError(status, getErrorMessage(data, 'Could not publish post.'));

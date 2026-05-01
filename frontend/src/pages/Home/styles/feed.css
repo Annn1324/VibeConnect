@@ -72,11 +72,18 @@
 }
 
 .home-post-media {
-  min-height: 252px;
-  border-radius: 22px;
-  background:
-    linear-gradient(180deg, rgba(24, 31, 52, 0.24), rgba(24, 31, 52, 0.08)),
-    linear-gradient(135deg, #5d8fa7, #f3ceb0);
+  overflow: hidden;
+  border-radius: 12px;
+  background: #151320;
+  border: 1px solid rgba(124, 102, 214, 0.1);
+}
+
+.home-post-media img,
+.home-post-media video {
+  display: block;
+  width: 100%;
+  max-height: 520px;
+  object-fit: contain;
 }
 
 .home-post-footer {
