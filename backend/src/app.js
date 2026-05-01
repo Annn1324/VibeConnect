@@ -2,6 +2,9 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const dotenv = require('dotenv');
+const path = require('path');
+
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 // Database connection
 const connectDB = require('./config/db');
@@ -13,7 +16,6 @@ const commentRoutes = require('./modules/comments/comment.route');
 const likeRoutes = require('./modules/like/like.route');
 
 // Load environment variables and connect to database
-dotenv.config();
 connectDB();
 
 // Initialize Express app

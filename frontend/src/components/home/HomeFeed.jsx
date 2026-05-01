@@ -68,6 +68,16 @@ function HomePostCard({ post, onDelete, onToggleLike, deletingPostId, likingPost
 
       <p className="home-post-copy">{post.content}</p>
 
+      {post.media?.url ? (
+        <div className="home-post-media">
+          {post.media.resourceType === 'video' ? (
+            <video src={post.media.url} controls preload="metadata" />
+          ) : (
+            <img src={post.media.url} alt="" loading="lazy" />
+          )}
+        </div>
+      ) : null}
+
       <div className="home-chip-row">
         {badges.map((badge) => (
           <span key={badge} className="home-chip home-chip-static">

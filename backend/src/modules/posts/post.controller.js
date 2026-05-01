@@ -3,6 +3,8 @@ const Comment = require('../comments/comment.model');
 const Like = require('../like/like.model');
 const AppError = require('../../utils/AppError');
 const catchAsync = require('../../utils/catchAsync');
+const cloudinary = require('../../config/cloudinary');
+const uploadBufferToCloudinary = require('../../utils/cloudinaryUpload');
 
 const toCountMap = (items) =>
     items.reduce((acc, item) => {
@@ -13,6 +15,16 @@ const toCountMap = (items) =>
 const formatPost = (post, { likeCounts = {}, commentCounts = {}, viewerLikes = {} } = {}) => ({
     id: post._id,
     content: post.content,
+    media: post.media?.url ? {
+        url: post.media.url,
+        publicId: post.media.publicId,
+        resourceType: post.media.resourceType,
+        format: post.media.format,
+        bytes: post.media.bytes,
+        width: post.media.width,
+        height: post.media.height,
+        duration: post.media.duration
+    } : null,
     createdAt: post.createdAt,
     updatedAt: post.updatedAt,
     author: {
@@ -75,9 +87,30 @@ const loadPostStats = async (postIds, userId) => {
 // Create a new post
 exports.createPost = catchAsync(async (req, res) => {
     const { content } = req.body;
+    let media;
+
+    if (req.file) {
+        const uploadedMedia = await uploadBufferToCloudinary(
+            req.file,
+            process.env.CLOUDINARY_POST_FOLDER || 'vibeconnect/posts'
+        );
+
+        media = {
+            url: uploadedMedia.secure_url,
+            publicId: uploadedMedia.public_id,
+            resourceType: uploadedMedia.resource_type,
+            format: uploadedMedia.format,
+            bytes: uploadedMedia.bytes,
+            width: uploadedMedia.width,
+            height: uploadedMedia.height,
+            duration: uploadedMedia.duration
+        };
+    }
+
     const createdPost = await Post.create({
         authorID: req.user.userId,
-        content
+        content,
+        media
     });
 
     const post = await Post.findById(createdPost._id).populate('authorID', 'fullname username');
@@ -167,6 +200,16 @@ exports.deletePost = catchAsync(async (req, res) => {
 
     if (post.authorID.toString() !== req.user.userId) {
         throw new AppError('You are not allowed to delete this post', 403);
+    }
+
+    if (post.media?.publicId) {
+        try {
+            await cloudinary.uploader.destroy(post.media.publicId, {
+                resource_type: post.media.resourceType || 'image'
+            });
+        } catch (error) {
+            console.warn('Could not delete Cloudinary media', error.message);
+        }
     }
 
     await post.deleteOne();
