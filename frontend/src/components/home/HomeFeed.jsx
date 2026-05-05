@@ -35,6 +35,7 @@ const formatTimeAgo = (value) => {
 function HomePostCard({ post, onDelete, onToggleLike, deletingPostId, likingPostId }) {
   const author = post.author || {};
   const stats = post.stats || { likes: 0, comments: 0, shares: 0 };
+  const mediaItems = Array.isArray(post.media) ? post.media : (post.media?.url ? [post.media] : []);
   const shareCount = stats.shares || 0;
   const authorName = author.fullname || author.username || 'Unknown user';
   const authorHandle = author.username ? `@${author.username}` : 'member';
@@ -68,13 +69,17 @@ function HomePostCard({ post, onDelete, onToggleLike, deletingPostId, likingPost
 
       <p className="home-post-copy">{post.content}</p>
 
-      {post.media?.url ? (
-        <div className="home-post-media">
-          {post.media.resourceType === 'video' ? (
-            <video src={post.media.url} controls preload="metadata" />
-          ) : (
-            <img src={post.media.url} alt="" loading="lazy" />
-          )}
+      {mediaItems.length ? (
+        <div className={`home-post-media-grid home-post-media-count-${Math.min(mediaItems.length, 4)}`}>
+          {mediaItems.map((mediaItem) => (
+            <div key={mediaItem.publicId || mediaItem.url} className="home-post-media">
+              {mediaItem.resourceType === 'video' ? (
+                <video src={mediaItem.url} controls preload="metadata" />
+              ) : (
+                <img src={mediaItem.url} alt="" loading="lazy" />
+              )}
+            </div>
+          ))}
         </div>
       ) : null}
 

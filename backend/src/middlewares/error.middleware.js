@@ -1,8 +1,10 @@
 const AppError = require('../utils/AppError');
 
+// Chuyển lỗi ObjectId sai định dạng của Mongoose thành lỗi 400 dễ hiểu cho client.
 const handleCastErrorDB = (err) =>
     new AppError(`Invalid ${err.path}: ${err.value}`, 400);
 
+// Chuyển lỗi unique index thành thông báo cụ thể cho các field đăng ký.
 const handleDuplicateFieldsDB = (err) => {
     const duplicatedFields = Object.keys(err.keyValue || {});
     const rawMessage = `${err.message || ''}`.toLowerCase();
@@ -18,17 +20,20 @@ const handleDuplicateFieldsDB = (err) => {
     return new AppError('User already exists', 400);
 };
 
+// Gom lỗi validate của Mongoose thành một message chung.
 const handleValidationErrorDB = (err) => {
     const errors = Object.values(err.errors).map((item) => item.message);
     return new AppError(errors.join(', '), 400);
 };
 
+// Chuẩn hoá lỗi JWT để client biết cần đăng nhập lại.
 const handleJWTError = () =>
     new AppError('Invalid token. Please log in again.', 401);
 
 const handleJWTExpiredError = () =>
     new AppError('Your token has expired. Please log in again.', 401);
 
+// Ở môi trường dev trả thêm stack/error để debug nhanh.
 const sendErrorDev = (err, res) => {
     res.status(err.statusCode).json({
         status: err.status,
@@ -38,6 +43,7 @@ const sendErrorDev = (err, res) => {
     });
 };
 
+// Ở production chỉ trả lỗi đã kiểm soát; lỗi hệ thống thì log server và giấu chi tiết.
 const sendErrorProd = (err, res) => {
     if (err.isOperational) {
         return res.status(err.statusCode).json({
@@ -54,6 +60,7 @@ const sendErrorProd = (err, res) => {
     });
 };
 
+// Middleware xử lý lỗi tập trung của Express.
 const errorMiddleware = (err, req, res, next) => {
     let error = err;
     error.statusCode = error.statusCode || 500;

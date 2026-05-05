@@ -1,6 +1,7 @@
 const { z } = require('zod');
 const { objectId } = require('./common.validation');
 
+// Schema tạo bình luận mới cho một post.
 const createCommentSchema = z.object({
     postID: objectId,
     content: z
@@ -10,6 +11,7 @@ const createCommentSchema = z.object({
         .max(300, 'Content must be less than 300 characters'),
 });
 
+// Query phân trang danh sách bình luận.
 const getCommentsQuerySchema = z.object({
     page: z.coerce
         .number()

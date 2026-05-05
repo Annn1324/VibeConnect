@@ -6,7 +6,7 @@ const validate = require('../../validation/validation.middleware');
 const { createLikeSchema } = require('../../validation/like.validation');
 const { postIdParamSchema, idParamSchema } = require('../../validation/common.validation');
 
-// Create a new like
+// Route like: tạo/xem/xoá like đều yêu cầu user đã đăng nhập.
 router.post('/', authMiddleware, validate(createLikeSchema), LikeController.createLike);
 router.get('/post/:postId', authMiddleware, validate(postIdParamSchema, 'params'), LikeController.getLikesByPostId);
 router.delete('/:id', authMiddleware, validate(idParamSchema, 'params'), LikeController.deleteLike);

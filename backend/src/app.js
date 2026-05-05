@@ -6,7 +6,7 @@ const path = require('path');
 
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
-// Database connection
+// Import cấu hình kết nối database và các middleware dùng chung cho toàn app.
 const connectDB = require('./config/db');
 const errorMiddleware = require('./middlewares/error.middleware');
 const notFoundMiddleware = require('./middlewares/notFound.middleware');
@@ -15,13 +15,13 @@ const postRoutes = require('./modules/posts/post.route');
 const commentRoutes = require('./modules/comments/comment.route');
 const likeRoutes = require('./modules/like/like.route');
 
-// Load environment variables and connect to database
+// Kết nối MongoDB khi app khởi động.
 connectDB();
 
-// Initialize Express app
+// Khởi tạo Express app.
 const app = express();
 
-// Middleware
+// Cho phép frontend gọi API kèm cookie/header xác thực theo CLIENT_URL cấu hình.
 app.use(cors({
     origin: process.env.CLIENT_URL,
     credentials: true
@@ -31,17 +31,18 @@ app.use(morgan('dev'));
 app.use(express.json());
 
 
-// Test route
+// Route kiểm tra nhanh API có đang chạy hay không.
 app.get('/', (req, res) => {
     res.send('Welcome to VibeConnect API');
 });
 
-// Routes
+// Gắn các nhóm route theo module nghiệp vụ.
 app.use('/auth', authRoutes);
 app.use('/posts', postRoutes);
 app.use('/comments', commentRoutes);
 app.use('/likes', likeRoutes);
 
+// Middleware cuối luồng: route không tồn tại và xử lý lỗi tập trung.
 app.use(notFoundMiddleware);
 app.use(errorMiddleware);
 
