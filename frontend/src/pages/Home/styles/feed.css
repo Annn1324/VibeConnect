@@ -71,10 +71,30 @@
   line-height: 1.65;
 }
 
+.home-post-media-grid {
+  display: grid;
+  gap: 6px;
+  max-width: 520px;
+}
+
+.home-post-media-count-2,
+.home-post-media-count-4 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.home-post-media-count-3 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.home-post-media-count-3 .home-post-media:first-child {
+  grid-row: span 2;
+}
+
 .home-post-media {
+  aspect-ratio: 4 / 3;
   overflow: hidden;
   border-radius: 12px;
-  background: #151320;
+  background: #f4f1fb;
   border: 1px solid rgba(124, 102, 214, 0.1);
 }
 
@@ -82,8 +102,12 @@
 .home-post-media video {
   display: block;
   width: 100%;
-  max-height: 520px;
-  object-fit: contain;
+  height: 100%;
+  object-fit: cover;
+}
+
+.home-post-media-count-1 .home-post-media {
+  max-height: 360px;
 }
 
 .home-post-footer {

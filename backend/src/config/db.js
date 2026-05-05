@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-// MongoDB connection
+// Kết nối MongoDB bằng connection string trong biến môi trường MONGO_URI.
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);

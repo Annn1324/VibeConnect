@@ -1,5 +1,6 @@
 const { z } = require('zod');
 
+// Schema validate dữ liệu đăng ký tài khoản.
 const registerSchema = z.object({
     fullname: z
         .string()
@@ -23,6 +24,7 @@ const registerSchema = z.object({
         .min(6, 'Password must be at least 6 characters')
 });
 
+// Schema validate dữ liệu đăng nhập.
 const loginSchema = z.object({
     email: z
         .string()

@@ -6,7 +6,7 @@ const validate = require('../../validation/validation.middleware');
 const { createCommentSchema, getCommentsQuerySchema } = require('../../validation/comment.validation');
 const { postIdParamSchema,idParamSchema } = require('../../validation/common.validation');
 
-// Create a new comment
+// Route bình luận: validate params/query/body trước khi controller xử lý nghiệp vụ.
 router.post('/', authMiddleware, validate(createCommentSchema), CommentController.createComment);
 router.get('/post/:postId', authMiddleware, validate(postIdParamSchema, 'params'), validate(getCommentsQuerySchema, 'query'), CommentController.getCommentsByPostId);
 router.put('/:id', authMiddleware, validate(idParamSchema, 'params'), CommentController.updateComment);

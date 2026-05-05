@@ -11,7 +11,7 @@ const { idParamSchema } = require('../../validation/common.validation');
 const { uploadPostMedia } = require('../../middlewares/upload.middleware');
 const router = express.Router();
 
-// Create a new post
+// Route bài viết: luôn xác thực user trước, sau đó validate dữ liệu theo từng endpoint.
 router.post('/', authMiddleware, uploadPostMedia, validate(createPostSchema), PostController.createPost);
 router.get('/', authMiddleware, validate(getPostsQuerySchema, 'query'), PostController.getPosts);
 router.get('/:id', authMiddleware, validate(idParamSchema, 'params'), PostController.getPostById);

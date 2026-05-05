@@ -6,25 +6,18 @@ const catchAsync = require('../../utils/catchAsync');
 const cloudinary = require('../../config/cloudinary');
 const uploadBufferToCloudinary = require('../../utils/cloudinaryUpload');
 
+// Chuyển kết quả aggregate từ MongoDB thành object tra cứu nhanh theo postId.
 const toCountMap = (items) =>
     items.reduce((acc, item) => {
         acc[item._id.toString()] = item.count;
         return acc;
     }, {});
 
+// Chuẩn hoá dữ liệu post trước khi trả về client để frontend không phụ thuộc trực tiếp vào schema MongoDB.
 const formatPost = (post, { likeCounts = {}, commentCounts = {}, viewerLikes = {} } = {}) => ({
     id: post._id,
     content: post.content,
-    media: post.media?.url ? {
-        url: post.media.url,
-        publicId: post.media.publicId,
-        resourceType: post.media.resourceType,
-        format: post.media.format,
-        bytes: post.media.bytes,
-        width: post.media.width,
-        height: post.media.height,
-        duration: post.media.duration
-    } : null,
+    media: Array.isArray(post.media) ? post.media : (post.media?.url ? [post.media] : []),
     createdAt: post.createdAt,
     updatedAt: post.updatedAt,
     author: {
@@ -41,6 +34,7 @@ const formatPost = (post, { likeCounts = {}, commentCounts = {}, viewerLikes = {
     isOwner: false
 });
 
+// Gắn thêm quyền sở hữu bài viết theo user hiện tại.
 const formatPostWithOwner = (post, userId, stats) => {
     const formattedPost = formatPost(post, stats);
 
@@ -50,6 +44,7 @@ const formatPostWithOwner = (post, userId, stats) => {
     };
 };
 
+// Tải thống kê like/comment và trạng thái like của viewer trong một lần để tránh query lặp từng post.
 const loadPostStats = async (postIds, userId) => {
     if (!postIds.length) {
         return {
@@ -59,6 +54,7 @@ const loadPostStats = async (postIds, userId) => {
         };
     }
 
+    // Chạy song song các truy vấn độc lập để giảm thời gian phản hồi API.
     const [likeCountsRaw, commentCountsRaw, viewerLikesRaw] = await Promise.all([
         Like.aggregate([
             { $match: { postID: { $in: postIds } } },
@@ -84,18 +80,24 @@ const loadPostStats = async (postIds, userId) => {
     };
 };
 
-// Create a new post
+// Tạo bài viết mới, kèm upload media nếu request có file.
 exports.createPost = catchAsync(async (req, res) => {
     const { content } = req.body;
     let media;
 
-    if (req.file) {
-        const uploadedMedia = await uploadBufferToCloudinary(
-            req.file,
-            process.env.CLOUDINARY_POST_FOLDER || 'vibeconnect/posts'
+    if (req.files?.length) {
+        // map tạo danh sách Promise upload, Promise.all đợi tất cả file upload xong rồi mới lưu post.
+        const uploadedMediaItems = await Promise.all(
+            req.files.map((file) =>
+                uploadBufferToCloudinary(
+                    file,
+                    process.env.CLOUDINARY_POST_FOLDER || 'vibeconnect/posts'
+                )
+            )
         );
 
-        media = {
+        // Chỉ lưu metadata cần dùng ở client và lúc xoá file trên Cloudinary.
+        media = uploadedMediaItems.map((uploadedMedia) => ({
             url: uploadedMedia.secure_url,
             publicId: uploadedMedia.public_id,
             resourceType: uploadedMedia.resource_type,
@@ -104,7 +106,7 @@ exports.createPost = catchAsync(async (req, res) => {
             width: uploadedMedia.width,
             height: uploadedMedia.height,
             duration: uploadedMedia.duration
-        };
+        }));
     }
 
     const createdPost = await Post.create({
@@ -124,11 +126,12 @@ exports.createPost = catchAsync(async (req, res) => {
     );
 });
 
-// Get all posts
+// Lấy danh sách bài viết có phân trang và thống kê tương tác.
 exports.getPosts = catchAsync(async (req, res) => {
     const { page, limit } = req.query;
     const skip = (page - 1) * limit;
 
+    // Tổng số bài và danh sách bài là hai truy vấn độc lập nên có thể chạy song song.
     const [total, posts] = await Promise.all([
         Post.countDocuments(),
         Post.find()
@@ -155,7 +158,7 @@ exports.getPosts = catchAsync(async (req, res) => {
 });
 
 
-// Get a single post by ID
+// Lấy chi tiết một bài viết theo ID.
 exports.getPostById = catchAsync(async (req, res) => {
     const post = await Post.findById(req.params.id).populate('authorID', 'fullname username');
 
@@ -168,7 +171,7 @@ exports.getPostById = catchAsync(async (req, res) => {
     res.json(formatPostWithOwner(post, req.user.userId, stats));
 });
 
-// Update a post
+// Cập nhật nội dung bài viết. Chỉ chủ bài viết mới được sửa.
 exports.updatePost = catchAsync(async (req, res) => {
     const { content } = req.body;
     const post = await Post.findById(req.params.id);
@@ -190,7 +193,7 @@ exports.updatePost = catchAsync(async (req, res) => {
     res.json(formatPostWithOwner(updatedPost, req.user.userId, stats));
 });
 
-// Delete a post
+// Xoá bài viết và dọn media tương ứng trên Cloudinary. Chỉ chủ bài viết mới được xoá.
 exports.deletePost = catchAsync(async (req, res) => {
     const post = await Post.findById(req.params.id);
 
@@ -202,14 +205,23 @@ exports.deletePost = catchAsync(async (req, res) => {
         throw new AppError('You are not allowed to delete this post', 403);
     }
 
-    if (post.media?.publicId) {
-        try {
-            await cloudinary.uploader.destroy(post.media.publicId, {
-                resource_type: post.media.resourceType || 'image'
-            });
-        } catch (error) {
-            console.warn('Could not delete Cloudinary media', error.message);
-        }
+    const mediaItems = Array.isArray(post.media) ? post.media : (post.media?.publicId ? [post.media] : []);
+
+    if (mediaItems.length) {
+        // Không chặn xoá post nếu Cloudinary xoá file thất bại; log lại để kiểm tra sau.
+        await Promise.all(mediaItems.map(async (mediaItem) => {
+            if (!mediaItem.publicId) {
+                return;
+            }
+
+            try {
+                await cloudinary.uploader.destroy(mediaItem.publicId, {
+                    resource_type: mediaItem.resourceType || 'image'
+                });
+            } catch (error) {
+                console.warn('Could not delete Cloudinary media', error.message);
+            }
+        }));
     }
 
     await post.deleteOne();

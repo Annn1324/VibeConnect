@@ -1,3 +1,4 @@
+// Lớp lỗi dùng cho các lỗi nghiệp vụ đã dự đoán được, ví dụ 400/401/403/404.
 class AppError extends Error {
     constructor(message, statusCode) {
         super(message);

@@ -5,7 +5,7 @@ const authMiddleware = require('./auth.middleware');
 const { registerSchema, loginSchema } = require('../../validation/auth.validation');
 const validate = require('../../validation/validation.middleware');
 
-// auth routes
+// Nhóm route xác thực: validate input trước khi vào controller.
 router.post('/register', validate(registerSchema), authController.register);
 router.post('/login', validate(loginSchema), authController.login);
 router.get('/me', authMiddleware, authController.getMe);

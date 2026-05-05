@@ -2,7 +2,7 @@ const Comment = require('./comment.model');
 const AppError = require('../../utils/AppError');
 const catchAsync = require('../../utils/catchAsync');
 
-// Create a new comment
+// Tạo bình luận mới cho một bài viết.
 exports.createComment = catchAsync(async (req, res) => {
     const { postID, content } = req.body;
     const comment = await Comment.create({
@@ -14,7 +14,7 @@ exports.createComment = catchAsync(async (req, res) => {
     res.status(201).json(comment);
 });
 
-// Get comments for a post
+// Lấy danh sách bình luận của một bài viết, có phân trang.
 exports.getCommentsByPostId = catchAsync(async (req, res) => {
     const { postId } = req.params;
     const { page, limit } = req.query;
@@ -22,6 +22,7 @@ exports.getCommentsByPostId = catchAsync(async (req, res) => {
 
     const total = await Comment.countDocuments({ postID: postId });
     
+    // Populate authorID để client có username của người bình luận.
     const comments = await Comment.find({ postID: postId })
         .populate('authorID', 'username')
         .sort({ createdAt: -1 })
@@ -39,7 +40,7 @@ exports.getCommentsByPostId = catchAsync(async (req, res) => {
     });
 });
 
-// Update a comment
+// Cập nhật bình luận. Chỉ tác giả bình luận mới được sửa.
 exports.updateComment = catchAsync(async (req, res) => {
     const { content } = req.body;
     const comment = await Comment.findById(req.params.id);
@@ -58,7 +59,7 @@ exports.updateComment = catchAsync(async (req, res) => {
     res.json(comment);
 });
 
-// Delete a comment
+// Xoá bình luận. Chỉ tác giả bình luận mới được xoá.
 exports.deleteComment = catchAsync(async (req, res) => {
     const comment = await Comment.findById(req.params.id);
 
@@ -73,4 +74,3 @@ exports.deleteComment = catchAsync(async (req, res) => {
     await comment.deleteOne();
     res.json({ message: 'Comment deleted' });
 });
-

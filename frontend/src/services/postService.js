@@ -18,15 +18,18 @@ export const getPosts = async (page = 1, limit = 20) => {
   return data;
 };
 
-export const createPost = async (content, mediaFile) => {
+export const createPost = async (content, mediaFiles = []) => {
   const requestOptions = {
     method: 'POST',
   };
+  const files = Array.isArray(mediaFiles) ? mediaFiles : (mediaFiles ? [mediaFiles] : []);
 
-  if (mediaFile) {
+  if (files.length) {
     const formData = new FormData();
     formData.append('content', content);
-    formData.append('media', mediaFile);
+    files.forEach((mediaFile) => {
+      formData.append('media', mediaFile);
+    });
     requestOptions.body = formData;
   } else {
     requestOptions.headers = {

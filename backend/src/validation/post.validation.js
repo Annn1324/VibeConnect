@@ -1,6 +1,7 @@
 const { z } = require('zod');
 
 
+// Nội dung post bắt buộc có chữ sau khi trim và giới hạn độ dài để tránh payload quá lớn.
 const createPostSchema = z.object({
     content: z
         .string()
@@ -9,8 +10,10 @@ const createPostSchema = z.object({
         .max(500, 'Content must be less than 500 characters'),
 });
 
+// Hiện tại update post dùng cùng rule với create post.
 const updatePostSchema = createPostSchema;
 
+// Query phân trang: z.coerce chuyển string từ URL thành number.
 const getPostsQuerySchema = z.object({
     page: z.coerce
         .number()

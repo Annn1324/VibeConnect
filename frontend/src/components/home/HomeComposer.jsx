@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import pictureIcon from '../../assets/picture-icon.png';
 import videoIcon from '../../assets/video-icon.png';
 
@@ -7,12 +7,20 @@ const MAX_COMPOSER_HEIGHT = 120;
 
 export default function HomeComposer({ user, isSubmitting, onSubmit }) {
   const [content, setContent] = useState('');
-  const [mediaFile, setMediaFile] = useState(null);
+  const [mediaFiles, setMediaFiles] = useState([]);
   const [error, setError] = useState('');
   const textareaRef = useRef(null);
-  const imageInputRef = useRef(null);
-  const videoInputRef = useRef(null);
   const avatarLabel = user?.username?.[0] || user?.fullname?.[0] || user?.email?.[0] || 'U';
+  const mediaPreviews = useMemo(() => mediaFiles.map((file) => ({
+    file,
+    url: URL.createObjectURL(file),
+  })), [mediaFiles]);
+
+  useEffect(() => {
+    return () => {
+      mediaPreviews.forEach((preview) => URL.revokeObjectURL(preview.url));
+    };
+  }, [mediaPreviews]);
 
   useLayoutEffect(() => {
     const textarea = textareaRef.current;
@@ -47,29 +55,32 @@ export default function HomeComposer({ user, isSubmitting, onSubmit }) {
 
     try {
       setError('');
-      await onSubmit(trimmedContent, mediaFile);
+      await onSubmit(trimmedContent, mediaFiles);
       setContent('');
-      setMediaFile(null);
-      if (imageInputRef.current) {
-        imageInputRef.current.value = '';
-      }
-      if (videoInputRef.current) {
-        videoInputRef.current.value = '';
-      }
+      setMediaFiles([]);
     } catch (submitError) {
       setError(submitError.message || 'Không thể đăng bài.');
     }
   };
 
-  const handleMediaChange = (event) => {
-    const file = event.target.files?.[0];
+  const addMediaFiles = (selectedFiles) => {
+    const files = selectedFiles.slice(0, 4);
 
-    if (!file) {
+    if (!files.length) {
       return;
     }
 
     setError('');
-    setMediaFile(file);
+    setMediaFiles((currentFiles) => {
+      const availableSlots = Math.max(0, 4 - currentFiles.length);
+      const nextFiles = [...currentFiles, ...files.slice(0, availableSlots)];
+
+      if (files.length > availableSlots) {
+        setError('Bạn chỉ có thể đăng tối đa 4 ảnh hoặc video.');
+      }
+
+      return nextFiles;
+    });
   };
 
   return (
@@ -91,55 +102,48 @@ export default function HomeComposer({ user, isSubmitting, onSubmit }) {
         <div className="home-composer-footer">
           <div className="home-chip-row">
             <span className="home-chip home-chip-static">@{user?.username || 'guest'}</span>
-            {mediaFile ? (
-              <button
-                type="button"
-                className="home-chip home-chip-media"
-                onClick={() => {
-                  setMediaFile(null);
-                  if (imageInputRef.current) {
-                    imageInputRef.current.value = '';
-                  }
-                  if (videoInputRef.current) {
-                    videoInputRef.current.value = '';
-                  }
-                }}
-              >
-                {mediaFile.name}
-              </button>
+            {mediaFiles.length ? (
+              <span className="home-chip home-chip-static">{mediaFiles.length}/4 media</span>
             ) : null}
           </div>
+          {mediaPreviews.length ? (
+            <div className="home-composer-previews">
+              {mediaPreviews.map(({ file, url }) => (
+                <div key={`${file.name}-${file.lastModified}`} className="home-composer-preview">
+                  {file.type.startsWith('video/') ? (
+                    <video src={url} muted preload="metadata" />
+                  ) : (
+                    <img src={url} alt="" />
+                  )}
+                  <button
+                    type="button"
+                    className="home-composer-remove"
+                    aria-label={`Remove ${file.name}`}
+                    onClick={() => {
+                      setMediaFiles((currentFiles) => currentFiles.filter((item) => item !== file));
+                    }}
+                  >
+                    x
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : null}
           <div className="home-composer-actions">
-            <input
-              ref={imageInputRef}
-              type="file"
-              accept="image/*"
-              className="home-file-input"
-              onChange={handleMediaChange}
-            />
-            <input
-              ref={videoInputRef}
-              type="file"
-              accept="video/*"
-              className="home-file-input"
-              onChange={handleMediaChange}
-            />
-            <button
-              type="button"
+            <label
               className="home-icon-button home-composer-tool"
               aria-label="Add image"
-              onClick={() => imageInputRef.current?.click()}
+              htmlFor="home-image-input"
             >
               <img src={pictureIcon} alt="" className="home-action-icon" />
-            </button>
-            <button
-              type="button"
+            </label>
+            <label
               className="home-icon-button home-composer-tool"
               aria-label="Add video"
-              onClick={() => videoInputRef.current?.click()}
+              htmlFor="home-video-input"
             >
               <img src={videoIcon} alt="" className="home-action-icon" />
-            </button>
+            </label>
             <button type="submit" className="home-primary-button" disabled={isSubmitting}>
               {isSubmitting ? 'Posting...' : 'Post'}
             </button>
@@ -147,6 +151,28 @@ export default function HomeComposer({ user, isSubmitting, onSubmit }) {
         </div>
         {error ? <p className="home-composer-error">{error}</p> : null}
       </form>
+      <input
+        id="home-image-input"
+        type="file"
+        accept="image/*"
+        multiple
+        className="home-file-input"
+        onChange={(event) => {
+          addMediaFiles(Array.from(event.target.files || []));
+          event.target.value = '';
+        }}
+      />
+      <input
+        id="home-video-input"
+        type="file"
+        accept="video/*"
+        multiple
+        className="home-file-input"
+        onChange={(event) => {
+          addMediaFiles(Array.from(event.target.files || []));
+          event.target.value = '';
+        }}
+      />
     </section>
   );
 }
