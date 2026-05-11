@@ -170,6 +170,22 @@ export default function Home() {
     }
   };
 
+  const handleCommentCountChange = (postId, delta) => {
+    setPosts((currentPosts) =>
+      currentPosts.map((currentPost) =>
+        currentPost.id === postId
+          ? {
+              ...currentPost,
+              stats: {
+                ...currentPost.stats,
+                comments: Math.max(0, (currentPost.stats?.comments || 0) + delta),
+              },
+            }
+          : currentPost,
+      ),
+    );
+  };
+
   return (
     <div className="home-page">
       <div className="home-shell">
@@ -188,6 +204,7 @@ export default function Home() {
                 onRetry={loadPosts}
                 onDelete={handleDeletePost}
                 onToggleLike={handleToggleLike}
+                onCommentCountChange={handleCommentCountChange}
                 deletingPostId={deletingPostId}
                 likingPostId={likingPostId}
               />
