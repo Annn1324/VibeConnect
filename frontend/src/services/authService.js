@@ -1,4 +1,4 @@
-import { apiRequest } from './api';
+import { apiRequest, authorizedApiRequest } from './api';
 
 const AUTH_ERROR_MESSAGES = {
   INVALID_CREDENTIALS: 'Email or password is incorrect.',
@@ -90,4 +90,23 @@ export const register = async ({ fullname, email, username, password }) => {
   }
 
   return data;
+};
+
+export const getCurrentUser = async () => {
+  const { ok, status, data } = await authorizedApiRequest('/auth/me');
+
+  if (!ok) {
+    const error = new Error(data?.message || 'Could not load profile.');
+    error.status = status;
+    throw error;
+  }
+
+  return {
+    id: data.id || data._id,
+    fullname: data.fullname,
+    username: data.username,
+    email: data.email,
+    createdAt: data.createdAt,
+    updatedAt: data.updatedAt,
+  };
 };

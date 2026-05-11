@@ -3,6 +3,7 @@ import {BrowserRouter, Routes, Route, Navigate} from 'react-router-dom'
 import Login from './pages/Login/Login'
 import Register from './pages/Register/Register'
 import Home from './pages/Home/Home'
+import Profile from './pages/Profile/Profile'
 import RequireAuth from './routes/RequireAuth'
 import RedirectIfAuthenticated from './routes/RedirectIfAuthenticated'
 
@@ -19,6 +20,8 @@ function App() {
                 </Route>
                 <Route element={<RequireAuth />}>
                     <Route path="/home" element={<Home />} />
+                    {/* Trang cá nhân cũng cần đăng nhập nên đặt trong RequireAuth. */}
+                    <Route path="/profile" element={<Profile />} />
                 </Route>
             </Routes>
         </BrowserRouter>
