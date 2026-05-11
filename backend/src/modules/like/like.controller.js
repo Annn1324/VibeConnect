@@ -5,6 +5,15 @@ const catchAsync = require('../../utils/catchAsync');
 // Tạo like cho bài viết và phát sự kiện realtime để client cập nhật số like.
 exports.createLike = catchAsync(async (req, res) => {
     const { postID } = req.body;
+    const existingLike = await Like.findOne({
+        postID,
+        authorID: req.user.userId
+    });
+
+    if (existingLike) {
+        return res.status(200).json(existingLike);
+    }
+
     const like = await Like.create({
         postID,
         authorID: req.user.userId

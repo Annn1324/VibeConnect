@@ -11,6 +11,15 @@ const createCommentSchema = z.object({
         .max(300, 'Content must be less than 300 characters'),
 });
 
+// Schema sửa bình luận: chỉ cho phép đổi nội dung.
+const updateCommentSchema = z.object({
+    content: z
+        .string()
+        .trim()
+        .min(1, 'Content is required')
+        .max(300, 'Content must be less than 300 characters'),
+});
+
 // Query phân trang danh sách bình luận.
 const getCommentsQuerySchema = z.object({
     page: z.coerce
@@ -28,5 +37,6 @@ const getCommentsQuerySchema = z.object({
 
 module.exports = {
     createCommentSchema,
+    updateCommentSchema,
     getCommentsQuerySchema
 };

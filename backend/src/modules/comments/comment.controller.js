@@ -2,16 +2,32 @@ const Comment = require('./comment.model');
 const AppError = require('../../utils/AppError');
 const catchAsync = require('../../utils/catchAsync');
 
+const formatComment = (comment, userId) => ({
+    id: comment._id,
+    postID: comment.postID,
+    content: comment.content,
+    createdAt: comment.createdAt,
+    updatedAt: comment.updatedAt,
+    author: {
+        id: comment.authorID?._id || comment.authorID,
+        fullname: comment.authorID?.fullname || '',
+        username: comment.authorID?.username || ''
+    },
+    isOwner: (comment.authorID?._id || comment.authorID)?.toString() === userId
+});
+
 // Tạo bình luận mới cho một bài viết.
 exports.createComment = catchAsync(async (req, res) => {
     const { postID, content } = req.body;
-    const comment = await Comment.create({
+    const createdComment = await Comment.create({
         postID,
         authorID: req.user.userId,
         content
     });
 
-    res.status(201).json(comment);
+    const comment = await Comment.findById(createdComment._id).populate('authorID', 'fullname username');
+
+    res.status(201).json(formatComment(comment, req.user.userId));
 });
 
 // Lấy danh sách bình luận của một bài viết, có phân trang.
@@ -24,7 +40,7 @@ exports.getCommentsByPostId = catchAsync(async (req, res) => {
     
     // Populate authorID để client có username của người bình luận.
     const comments = await Comment.find({ postID: postId })
-        .populate('authorID', 'username')
+        .populate('authorID', 'fullname username')
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit);
@@ -36,7 +52,7 @@ exports.getCommentsByPostId = catchAsync(async (req, res) => {
         limit,
         total,
         totalPages,
-        data: comments
+        data: comments.map((comment) => formatComment(comment, req.user.userId))
     });
 });
 
@@ -56,7 +72,9 @@ exports.updateComment = catchAsync(async (req, res) => {
     comment.content = content;
     await comment.save();
 
-    res.json(comment);
+    const updatedComment = await Comment.findById(comment._id).populate('authorID', 'fullname username');
+
+    res.json(formatComment(updatedComment, req.user.userId));
 });
 
 // Xoá bình luận. Chỉ tác giả bình luận mới được xoá.

@@ -14,6 +14,7 @@ const authRoutes = require('./modules/auth/auth.route');
 const postRoutes = require('./modules/posts/post.route');
 const commentRoutes = require('./modules/comments/comment.route');
 const likeRoutes = require('./modules/like/like.route');
+const messageRoutes = require('./modules/messages/message.route');
 
 // Kết nối MongoDB khi app khởi động.
 connectDB();
@@ -41,6 +42,7 @@ app.use('/auth', authRoutes);
 app.use('/posts', postRoutes);
 app.use('/comments', commentRoutes);
 app.use('/likes', likeRoutes);
+app.use('/messages', messageRoutes);
 
 // Middleware cuối luồng: route không tồn tại và xử lý lỗi tập trung.
 app.use(notFoundMiddleware);
