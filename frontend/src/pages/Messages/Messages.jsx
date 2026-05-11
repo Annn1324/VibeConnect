@@ -11,6 +11,8 @@ import plusIcon from '../../assets/plus-icon.png';
 import sendIcon from '../../assets/send-icon.png';
 import smileIcon from '../../assets/smile-icon.png';
 import videoPhoneIcon from '../../assets/video-phone-icon.png';
+import addNewMessIcon from '../../assets/newmess-icon.png';
+
 import {
   getConversationMessages,
   getConversationUsers,
@@ -209,7 +211,7 @@ export default function Messages() {
               <div className="messages-panel-heading">
                 <h1>Inbox</h1>
                 <button type="button" className="messages-compose-button" aria-label="Refresh" onClick={loadUsers}>
-                  +
+                <img src={addNewMessIcon} alt = " " />
                 </button>
               </div>
 
