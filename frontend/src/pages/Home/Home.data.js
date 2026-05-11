@@ -5,11 +5,11 @@ import notificationsIcon from '../../assets/notifications-icon.png';
 import profileIcon from '../../assets/profile-icon.png';
 
 export const navItems = [
-  { label: 'Home', active: true, icon: homeIcon },
+  { label: 'Home', path: '/home', icon: homeIcon },
   { label: 'Explore', active: false, icon: exploreIcon },
   { label: 'Messages', active: false, icon: messagesIcon },
   { label: 'Notifications', active: false, icon: notificationsIcon },
-  { label: 'Profile', active: false, icon: profileIcon },
+  { label: 'Profile', path: '/profile', icon: profileIcon },
 ];
 
 export const sampleTrends = [

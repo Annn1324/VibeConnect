@@ -18,6 +18,17 @@ export const getPosts = async (page = 1, limit = 20) => {
   return data;
 };
 
+// Dùng cho trang cá nhân: chỉ lấy bài viết của user đang đăng nhập.
+export const getMyPosts = async (page = 1, limit = 20) => {
+  const { ok, status, data } = await authorizedApiRequest(`/posts/me?page=${page}&limit=${limit}`);
+
+  if (!ok) {
+    throw createHttpError(status, getErrorMessage(data, 'Could not load your posts.'));
+  }
+
+  return data;
+};
+
 export const createPost = async (content, mediaFiles = []) => {
   const requestOptions = {
     method: 'POST',

@@ -1,3 +1,4 @@
+import { NavLink } from 'react-router-dom';
 import brandIcon from '../../assets/icon.svg';
 
 export default function HomeSidebar({ navItems }) {
@@ -14,16 +15,27 @@ export default function HomeSidebar({ navItems }) {
       </div>
 
       <nav className="home-nav">
-        {navItems.map((item) => (
-          <button
-            key={item.label}
-            type="button"
-            className={`home-nav-item${item.active ? ' is-active' : ''}`}
-          >
-            <img src={item.icon} alt="" className="home-nav-icon" />
-            <span>{item.label}</span>
-          </button>
-        ))}
+        {navItems.map((item) =>
+          item.path ? (
+            <NavLink
+              key={item.label}
+              to={item.path}
+              className={({ isActive }) => `home-nav-item${isActive ? ' is-active' : ''}`}
+            >
+              <img src={item.icon} alt="" className="home-nav-icon" />
+              <span>{item.label}</span>
+            </NavLink>
+          ) : (
+            <button
+              key={item.label}
+              type="button"
+              className={`home-nav-item${item.active ? ' is-active' : ''}`}
+            >
+              <img src={item.icon} alt="" className="home-nav-icon" />
+              <span>{item.label}</span>
+            </button>
+          ),
+        )}
       </nav>
     </aside>
   );

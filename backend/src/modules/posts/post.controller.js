@@ -159,6 +159,36 @@ exports.getPosts = catchAsync(async (req, res) => {
 
 
 // Lấy chi tiết một bài viết theo ID.
+exports.getMyPosts = catchAsync(async (req, res) => {
+    const { page, limit } = req.query;
+    const skip = (page - 1) * limit;
+    const filter = { authorID: req.user.userId };
+
+    const [total, posts] = await Promise.all([
+        Post.countDocuments(filter),
+        Post.find(filter)
+            .populate('authorID', 'fullname username')
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit)
+    ]);
+
+    const stats = await loadPostStats(
+        posts.map((post) => post._id),
+        req.user.userId
+    );
+
+    const totalPages = Math.ceil(total / limit);
+
+    res.json({
+        page,
+        limit,
+        total,
+        totalPages,
+        data: posts.map((post) => formatPostWithOwner(post, req.user.userId, stats))
+    });
+});
+
 exports.getPostById = catchAsync(async (req, res) => {
     const post = await Post.findById(req.params.id).populate('authorID', 'fullname username');
 

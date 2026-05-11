@@ -265,4 +265,4 @@ File upload vượt quá giới hạn 50MB.
 
 ## Tác giả
 
-Dự án được xây dựng cho mục đích học tập và thực hành phát triển website full-stack.
+Dự án được xây dựng cho mục đích học tập và thực hành phát triển website full-stack và vẫn đang trong quá trình phát triển.

@@ -34,7 +34,12 @@ export default function HomeTopbar({ user }) {
         <button type="button" className="home-logout-button" onClick={handleLogout}>
           Log out
         </button>
-        <button type="button" className="home-avatar-button" aria-label="User profile">
+        <button
+          type="button"
+          className="home-avatar-button"
+          aria-label="User profile"
+          onClick={() => navigate('/profile')}
+        >
           {avatarLabel.toUpperCase()}
         </button>
       </div>
